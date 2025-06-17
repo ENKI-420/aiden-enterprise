@@ -4,6 +4,12 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import Script from 'next/script';
+import { PyramidResearchProvider } from '@/integrations/pyramid-research/PyramidResearchProvider';
+
+// --- Pyramid Research Integration ---
+// import { PyramidResearchProvider } from '@/integrations/pyramid-research/PyramidResearchProvider';
+// FIX: Update the import path if the file exists elsewhere, or create the missing file at the specified path.
+// ------------------------------------
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
@@ -90,7 +96,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name='apple-mobile-web-app-capable' content='yes' />
         <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
         <link rel='canonical' href='https://agentm3c.agiledefensesystems.us' />
-        <link rel='apple-touch-icon' href='/apple-touch-icon.png' />
+        <link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
+        <link rel='apple-touch-icon' sizes='152x152' href='/apple-touch-icon-152x152.png' />
         <link rel='icon' href='/favicon.ico' />
         <link rel='manifest' href='/site.webmanifest' />
 
@@ -121,7 +128,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          {/* --- Pyramid Research Integration Provider --- */}
+          <PyramidResearchProvider>{children}</PyramidResearchProvider>
+          {/* -------------------------------------------- */}
         </ThemeProvider>
       </body>
     </html>
