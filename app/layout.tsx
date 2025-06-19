@@ -1,136 +1,118 @@
-import type React from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import type { ReactNode } from 'react';
 import './globals.css';
+
 import { ThemeProvider } from '@/components/theme-provider';
 import Script from 'next/script';
-import { PyramidResearchProvider } from '@/integrations/pyramid-research/PyramidResearchProvider';
 
-// --- Pyramid Research Integration ---
-// import { PyramidResearchProvider } from '@/integrations/pyramid-research/PyramidResearchProvider';
-// FIX: Update the import path if the file exists elsewhere, or create the missing file at the specified path.
-// ------------------------------------
+// Dynamic Provider Path Check
+import { PyramidResearchProvider } from '@/integrations/pyramid-research/PyramidResearchProvider';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'AGENT-M3c | Enhanced AI Secure Ops by Agile Defense Systems, LLC',
+  title: 'Agile Defense Systems | AI-Driven Defense & Healthcare Automation',
   description:
-    'AGENT-M3c empowers mission-critical teams with real-time video + AI collaboration. Supports compliant agent orchestration, intelligent document parsing, and modular integration with Epic, Redox, and federal systems.',
+    'Secure, HIPAA- & CMMC-Compliant AI Solutions for Contract Intelligence, Clinical Workflows, and Cybersecurity. AIDEN Enterprise platform with AGENT-M3c multi-modal AI orchestration.',
   keywords:
-    'AGENT-M3c, HIPAA video AI, legal automation, AI for healthcare, federal AI tools, multi-agent LLM orchestration, Redox FHIR AI, AIDEN infrastructure, secure knowledge AI',
+    'AI-driven defense contracting, HIPAA-compliant AI orchestration, FHIR Redox clinical automation, automated RFP analysis, bid scoring, cybersecurity red team, AIDEN platform, AGENT-M3c, multi-model AI',
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://agentm3c.agiledefensesystems.us',
-    title: 'AGENT-M3c | Enhanced AI Secure Ops by Agile Defense Systems, LLC',
+    url: 'https://agiledefensesystems.com',
+    title: 'Agile Defense Systems | AI-Driven Defense & Healthcare Automation',
     description:
-      'Deploy intelligent, secure, and role-aware AI copilots inside live video workflows—tailored for legal, healthcare, and defense teams.',
-    siteName: 'AGENT-M3c',
+      'Secure, HIPAA- & CMMC-Compliant AI Solutions for Contract Intelligence, Clinical Workflows, and Cybersecurity.',
+    siteName: 'Agile Defense Systems',
     images: [
       {
-        url: 'https://agentm3c.agiledefensesystems.us/assets/og-banner.jpg',
+        url: 'https://agiledefensesystems.com/assets/og-banner.jpg',
         width: 1200,
         height: 630,
-        alt: 'AGENT-M3c Live AI Copilot Platform',
+        alt: 'Agile Defense Systems AI Platform',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AGENT-M3c | Enhanced AI Ops by Agile Defense Systems, LLC',
+    title: 'Agile Defense Systems | AI-Driven Defense & Healthcare Automation',
     description:
-      'Secure LLM orchestration for legal, clinical, and intelligence operations—compliant and mission-ready.',
-    images: ['https://agentm3c.agiledefensesystems.us/assets/twitter-preview.jpg'],
+      'Secure AI solutions for defense contracting, healthcare automation, and cybersecurity.',
+    images: ['https://agiledefensesystems.com/assets/twitter-preview.jpg'],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  generator: 'v0.dev',
+  robots: { index: true, follow: true },
+  generator: 'Next.js',
 };
 
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'AGENT-M3c',
-  operatingSystem: 'Web',
-  applicationCategory: 'BusinessApplication',
-  offers: {
-    '@type': 'Offer',
-    price: '499.00',
-    priceCurrency: 'USD',
+  '@type': 'Organization',
+  name: 'Agile Defense Systems, LLC',
+  description: 'AI-driven defense and healthcare automation solutions',
+  url: 'https://agiledefensesystems.com',
+  logo: 'https://agiledefensesystems.com/logo.png',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+1-800-ADS-TECH',
+    contactType: 'customer service'
   },
-  publisher: {
-    '@type': 'Organization',
-    name: 'Agile Defense Systems, LLC',
-  },
-  url: 'https://agentm3c.agiledefensesystems.us',
-  image: 'https://agentm3c.agiledefensesystems.us/assets/og-banner.jpg',
-  description:
-    'HIPAA-compliant AI + video collaboration system for mission-critical roles across legal, healthcare, and defense sectors.',
+  sameAs: [
+    'https://linkedin.com/company/agile-defense-systems'
+  ]
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang='en' suppressHydrationWarning>
-      <head>
-        <meta charSet='UTF-8' />
-        {/* Theme initialization to prevent hydration mismatch */}
-        <Script id='theme-init' strategy='beforeInteractive'>
-          {`(function() {
-      function getUserPreference() {
-        const stored = window.localStorage.getItem('theme');
-        if (stored) return stored;
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
-      document.documentElement.className = getUserPreference();
-    })();`}
-        </Script>
-        <meta
-          name='viewport'
-          content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
-        />
-        <meta name='theme-color' content='#1a1d21' />
-        <meta name='mobile-web-app-capable' content='yes' />
-        <meta name='apple-mobile-web-app-capable' content='yes' />
-        <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
-        <link rel='canonical' href='https://agentm3c.agiledefensesystems.us' />
-        <link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
-        <link rel='apple-touch-icon' sizes='152x152' href='/apple-touch-icon-152x152.png' />
-        <link rel='icon' href='/favicon.ico' />
-        <link rel='manifest' href='/site.webmanifest' />
+interface RootLayoutProps {
+  children: ReactNode;
+}
 
-        <script
-          type='application/ld+json'
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+export default function RootLayout({ children }: RootLayoutProps) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#1e40af" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="canonical" href="https://agiledefensesystems.com" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+        <Script id="theme-init" strategy="beforeInteractive">
+          {`(function() {
+              const theme = localStorage.getItem('theme') || 'dark';
+              document.documentElement.classList.add(theme);
+            })();`}
+        </Script>
+
         <style>{`
           ::selection {
-            background: #2465ed;
-            color: white;
+            background: #3b82f6;
+            color: #ffffff;
           }
           html, body {
             scroll-behavior: smooth;
-            background-color: #f9fafb;
             font-feature-settings: "ss01" on;
             -webkit-font-smoothing: antialiased;
+            background-color: #0f172a;
+            color: #ffffff;
           }
-          /* Font class applied on body via className */
+          .professional-grid {
+            background-image:
+              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+          }
         `}</style>
       </head>
-      <body
-        className={`antialiased bg-background text-foreground transition-colors duration-300 ease-in-out ${inter.className}`}
-      >
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
-          enableSystem
-          disableTransitionOnChange
-        >
-          {/* --- Pyramid Research Integration Provider --- */}
-          <PyramidResearchProvider>{children}</PyramidResearchProvider>
-          {/* -------------------------------------------- */}
+      <body className={`antialiased bg-slate-950 text-white transition-colors duration-300 ease-in-out ${inter.className}`}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+          <PyramidResearchProvider>
+            {children}
+          </PyramidResearchProvider>
         </ThemeProvider>
       </body>
     </html>

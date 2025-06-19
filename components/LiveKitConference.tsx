@@ -1,7 +1,12 @@
 "use client";
 import { LiveKitRoom, VideoConference } from '@livekit/components-react';
 
-export default function LiveKitConference({ room, token }) {
+interface LiveKitConferenceProps {
+  token: string;
+  room?: any; // You can replace `any` with the proper LiveKit Room type once added to the project.
+}
+
+export default function LiveKitConference({ room, token }: LiveKitConferenceProps) {
   return (
     <LiveKitRoom
       token={token}

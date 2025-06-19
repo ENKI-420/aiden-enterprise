@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
 import ARPresentationModal from "@/components/ARPresentationModal";
+import ARMarkerModal from "@/components/ARMarkerModal";
 import AICopilotSidebar from "@/components/AICopilotSidebar";
 import LiveDataPanel from "@/components/LiveDataPanel";
 
 const roles = ["Clinician", "Legal", "Admin", "Patient", "Developer", "Investor"];
 
-function getJitsiRoomName(role, room) {
+function getJitsiRoomName(role: string, room: string) {
   // Simple, deterministic room name for demo
   return `AIDEN_${role}_${room || "default"}`.replace(/\W+/g, "");
 }
@@ -16,6 +17,7 @@ export default function ConferenceDashboard() {
   const [room, setRoom] = useState("");
   const [joined, setJoined] = useState(false);
   const [arOpen, setArOpen] = useState(false);
+  const [arMarkerOpen, setArMarkerOpen] = useState(false);
 
   const jitsiRoom = getJitsiRoomName(role, room);
   const jitsiUrl = `https://meet.jit.si/${jitsiRoom}`;
@@ -23,9 +25,13 @@ export default function ConferenceDashboard() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-gray-950 via-gray-900 to-blue-950">
       <ARPresentationModal open={arOpen} onClose={() => setArOpen(false)} />
+      <ARMarkerModal open={arMarkerOpen} onClose={() => setArMarkerOpen(false)} />
       <div className="flex-1 flex flex-col items-center justify-center p-8">
         <h1 className="text-3xl font-bold mb-4">Secure Video Conference</h1>
-        <button onClick={() => setArOpen(true)} className="mb-4 px-6 py-2 rounded bg-yellow-400 hover:bg-yellow-500 font-bold text-lg shadow-lg transition text-black">AR Presentation Mode</button>
+        <div className="flex gap-4 mb-4">
+          <button onClick={() => setArOpen(true)} className="px-6 py-2 rounded bg-yellow-400 hover:bg-yellow-500 font-bold text-lg shadow-lg transition text-black">AR Presentation Mode</button>
+          <button onClick={() => setArMarkerOpen(true)} className="px-6 py-2 rounded bg-green-400 hover:bg-green-500 font-bold text-lg shadow-lg transition text-black">AR Marker Mode</button>
+        </div>
         <div className="mb-4">
           <label htmlFor="role-select" className="block mb-1 font-semibold">Select Role:</label>
           <select id="role-select" value={role} onChange={e => setRole(e.target.value)} className="px-4 py-2 rounded bg-gray-800 text-white">

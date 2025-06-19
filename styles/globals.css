@@ -92,3 +92,17 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.legalpad-bg {
+  background-color: #fffbe6; /* legal pad yellow */
+  background-image:
+    /* vertical navy lines */
+    repeating-linear-gradient(to right, #23395d 0, #23395d 2px, transparent 2px, transparent 32px),
+    /* horizontal navy lines */
+    repeating-linear-gradient(to bottom, #23395d 0, #23395d 2px, transparent 2px, transparent 32px),
+    /* every 5th horizontal line darker navy */
+    repeating-linear-gradient(to bottom, transparent 0, transparent 158px, #1a2533 158px, #1a2533 160px, transparent 160px, transparent 320px),
+    /* every 10th horizontal line even darker navy */
+    repeating-linear-gradient(to bottom, transparent 0, transparent 318px, #0d1321 318px, #0d1321 320px, transparent 320px, transparent 640px);
+  background-size: 32px 32px, 32px 32px, 32px 160px, 32px 320px;
+}

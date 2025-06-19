@@ -1,30 +1,106 @@
-# AI SaaS Landing page
+# Agile Defense Systems - AGENT-M3c Platform
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+A comprehensive AI-powered platform for mission-critical operations across healthcare, legal, and defense sectors.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/devindavis-1484s-projects/v0-ai-saa-s-landing-page)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/v2k3toJELzS)
+## 🚀 Recent Improvements
 
-## Overview
+### Development Experience
+- ✅ Enhanced VS Code settings with natural language search
+- ✅ Added comprehensive development scripts
+- ✅ Improved TypeScript configuration
+- ✅ Added error boundaries and loading components
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+### SEO & Performance
+- ✅ Auto-generated sitemap.xml
+- ✅ Optimized robots.txt
+- ✅ Enhanced Next.js configuration with security headers
+- ✅ PWA manifest for mobile app capabilities
 
-## Deployment
+### Code Quality
+- ✅ Analytics tracking utilities
+- ✅ Constants management
+- ✅ Environment configuration template
+- ✅ Reusable UI components
 
-Your project is live at:
+## 🛠️ Development Scripts
 
-**[https://vercel.com/devindavis-1484s-projects/v0-ai-saa-s-landing-page](https://vercel.com/devindavis-1484s-projects/v0-ai-saa-s-landing-page)**
+```bash
+# Development
+npm run dev          # Start development server
+npm run dev:turbo    # Start with Turbo mode (faster)
 
-## Build your app
+# Building & Testing
+npm run build        # Build for production
+npm run type-check   # Run TypeScript validation
+npm run lint         # Run ESLint
+npm run lint:fix     # Auto-fix linting issues
 
-Continue building your app on:
+# Utilities
+npm run clean        # Clean build artifacts
+npm run sitemap      # Generate sitemap.xml
+```
 
-**[https://v0.dev/chat/projects/v2k3toJELzS](https://v0.dev/chat/projects/v2k3toJELzS)**
+## 📁 Project Structure
 
-## How It Works
+```
+aiden-enterprise/
+├── app/                 # Next.js app directory
+├── components/          # Reusable React components
+├── lib/                # Utility libraries
+├── public/             # Static assets
+├── scripts/            # Build and utility scripts
+├── .vscode/            # VS Code configuration
+└── integrations/       # Third-party integrations
+```
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## 🔧 Setup Instructions
+
+1. **Environment Setup**
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local with your configuration
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Development**
+   ```bash
+   npm run dev
+   ```
+
+## 🚨 Known Issues & Fixes Needed
+
+The codebase currently has TypeScript errors that need attention:
+
+1. **Missing UI Components** - Several @/components/ui modules need to be created
+2. **Third-party Dependencies** - Some packages like @livekit/components-react need installation
+3. **Type Definitions** - Several components need proper TypeScript interfaces
+
+## 🌟 Key Features
+
+- **AGENT-M3c**: Multi-agent AI collaboration platform
+- **Project Spectra**: Advanced physics research module
+- **Executive Dashboard**: Real-time analytics and KPIs
+- **Compliance Monitoring**: HIPAA, CMMC, and NIST compliance
+- **Multi-modal AI**: Support for text, voice, and video processing
+
+## 🔒 Security & Compliance
+
+- CMMC Level 3 Certified
+- HIPAA Compliant
+- NIST 800-171 Compliant
+- Service-Disabled Veteran-Owned Business (SDVOSB)
+
+## 📞 Contact
+
+**Devin Davis** - Founder & CEO
+Email: devin@agiledefensesystems.com
+Company: Agile Defense Systems, LLC
+CAGE Code: 9HuP5
+
+---
+
+*This platform is designed for mission-critical operations and maintains the highest standards of security and compliance.*
