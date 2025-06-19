@@ -95,3 +95,6 @@ git pull --rebase origin main
 vercel --prod
 git pull --rebase origin main
 git status
+git add -A && git commit -m "chore: add all project files and sync deps"
+git pull --rebase origin main
+git status
