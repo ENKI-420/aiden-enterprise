@@ -7,8 +7,8 @@ import { Label } from "@/components/ui/label"
 
 // Temporary placeholder components for upcoming features.
 // Replace these with real implementations when available.
-const ARPresentationModal = () => null
-const ARMarkerModal = () => null
+const ARPresentationModal: React.FC = () => null
+const ARMarkerModal: React.FC = () => null
 
 type Role = "Presenter" | "Viewer"
 
