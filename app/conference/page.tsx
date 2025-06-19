@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, type FC } from "react"
+import { useState, type FC, type ChangeEvent } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import type React from "react"
 
 // Temporary placeholder components for upcoming features.
 // Replace these with real implementations when available.
@@ -42,7 +41,7 @@ export default function ConferencePage() {
               id="room"
               placeholder="Enter a room name"
               value={roomName}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRoomName(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setRoomName(e.target.value)}
             />
           </div>
 
@@ -51,7 +50,7 @@ export default function ConferencePage() {
             <select
               id="role"
               value={role}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setRole(e.target.value as Role)}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => setRole(e.target.value as Role)}
               className="block w-full rounded-md border bg-background p-2 text-foreground"
             >
               <option value="Presenter">Presenter</option>
