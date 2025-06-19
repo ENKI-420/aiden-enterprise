@@ -16,6 +16,7 @@ export default function Navbar() {
     { label: 'Testimonials', href: '#testimonials' },
     { label: 'Contact', href: '#contact' },
     { label: 'Immersive', href: '/immersive' },
+    { label: 'Project Spectra', href: '/project-spectra', highlight: true },
   ];
 
   return (
@@ -37,7 +38,7 @@ export default function Navbar() {
             <Link
               key={index}
               href={item.href}
-              className='text-sm font-medium transition-colors hover:text-primary'
+              className={`text-sm font-medium transition-colors hover:text-primary ${item.highlight ? 'px-3 py-1 rounded bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 text-white font-bold shadow-lg' : ''}`}
             >
               {item.label}
             </Link>
@@ -73,7 +74,7 @@ export default function Navbar() {
                   <Link
                     key={index}
                     href={item.href}
-                    className='text-lg font-medium transition-colors hover:text-primary'
+                    className={`text-lg font-medium transition-colors hover:text-primary ${item.highlight ? 'px-3 py-1 rounded bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 text-white font-bold shadow-lg' : ''}`}
                     onClick={() => setIsOpen(false)}
                   >
                     {item.label}
