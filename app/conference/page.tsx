@@ -1,14 +1,14 @@
 'use client'
 
-import React, { useState } from "react"
+import React, { useState, type FC } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 // Temporary placeholder components for upcoming features.
 // Replace these with real implementations when available.
-const ARPresentationModal: React.FC = () => null
-const ARMarkerModal: React.FC = () => null
+const ARPresentationModal: FC = () => null
+const ARMarkerModal: FC = () => null
 
 type Role = "Presenter" | "Viewer"
 
