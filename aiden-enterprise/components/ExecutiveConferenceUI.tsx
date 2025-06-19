@@ -7,6 +7,8 @@ import { exportPDF } from "@/lib/exportPdf";
 import { useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
 import * as THREE from 'three';
+import MedicalAgentPanel from "@/components/MedicalAgentPanel";
+import AgentWorkflowButton from "@/components/AgentWorkflowButton";
 
 const LAYOUTS = [
   { key: 'gallery', label: 'Gallery View' },
@@ -316,11 +318,26 @@ export default function ExecutiveConferenceUI() {
           <Button onClick={() => connect()} disabled={isConnected} aria-label="Join Conference" tabIndex={0}>{isConnected ? 'Connected' : 'Join Conference'}</Button>
           <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Join the LiveKit conference</span>
         </div>
+        <div className="relative group">
+          <AgentWorkflowButton
+            onWorkflowComplete={(results) => {
+              console.log('Workflow completed:', results);
+              // Could update transcript or show results in UI
+            }}
+          />
+          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Run AI analysis workflows</span>
+        </div>
       </div>
 
       {/* AR Overlay */}
       {arEnabled && <div ref={arRef} style={{ position: 'absolute', top: 0, left: 0, width: 400, height: 300, pointerEvents: 'none', zIndex: 10 }} />}
       {translated && <div className="mt-2 text-blue-400">{translated}</div>}
+
+      {/* Medical AI Agent Panel - positioned on the right side */}
+      <div className="fixed right-4 top-20 z-30">
+        <MedicalAgentPanel transcript={transcript} />
+      </div>
+
       <div className="mt-4 p-4 bg-gray-900 rounded-xl">
         <div className="font-bold mb-2">AI Q&amp;A</div>
         <input value={qaInput} onChange={e => setQaInput(e.target.value)} placeholder="Ask a question about this meeting..." className="px-2 py-1 rounded bg-gray-800 text-white w-2/3" />

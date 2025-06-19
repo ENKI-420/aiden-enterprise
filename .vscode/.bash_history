@@ -98,3 +98,16 @@ git status
 git add -A && git commit -m "chore: add all project files and sync deps"
 git pull --rebase origin main
 git status
+git stash && git pull --rebase origin main
+git rebase --abort
+rm -f pnpm-lock.yaml && npm install --legacy-peer-deps
+git add package-lock.json && git commit -m "build: update npm lockfile"
+git push --force origin main
+vercel --prod
+npm run build 2>&1 | head -50
+rm -rf .next node_modules && npm install --legacy-peer-deps
+npm install --legacy-peer-deps 2>&1 | tail -20
+git add .npmrc && git commit -m "build: skip sharp binary download to avoid segfault"
+git push origin main
+vercel --prod
+vercel logs aiden-enterprise-gniri2q6q-devindavis-1484s-projects.vercel.app 2>&1 | tail -50
