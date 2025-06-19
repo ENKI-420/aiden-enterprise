@@ -9,6 +9,7 @@ import useSWR from 'swr';
 import * as THREE from 'three';
 import MedicalAgentPanel from "@/components/MedicalAgentPanel";
 import AgentWorkflowButton from "@/components/AgentWorkflowButton";
+import PatientContextBar from "@/components/PatientContextBar";
 
 const LAYOUTS = [
   { key: 'gallery', label: 'Gallery View' },
@@ -82,6 +83,7 @@ export default function ExecutiveConferenceUI() {
 
   // Live transcript captured from the local microphone (fallback to empty string).
   const [transcript, setTranscript] = useState('');
+  const [patientContext, setPatientContext] = useState<any>(null);
 
   // Speech-to-text pipeline (Web Speech API as a stand-in for server STT)
   useEffect(() => {
@@ -242,6 +244,11 @@ export default function ExecutiveConferenceUI() {
     </div>
   );
 
+  // Get patient ID from URL params
+  const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const patientId = urlParams?.get('patient');
+  const mrn = urlParams?.get('mrn');
+
   return (
     <div className={theme === 'dark' ? 'bg-gray-950 text-white min-h-screen' : 'bg-white text-gray-900 min-h-screen'}>
       {/* Onboarding Modal (multi-step) */}
@@ -273,8 +280,17 @@ export default function ExecutiveConferenceUI() {
         </button>
       </div>
 
+      {/* Patient Context Bar - at the top */}
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-full max-w-2xl px-4">
+        <PatientContextBar
+          patientId={patientId || undefined}
+          mrn={mrn || undefined}
+          onPatientLoad={setPatientContext}
+        />
+      </div>
+
       {/* Layout Switcher */}
-      <div className="fixed top-4 left-4 z-40">
+      <div className="fixed top-20 left-4 z-40">
         {LAYOUTS.map(l => (
           <button
             key={l.key}
@@ -335,7 +351,7 @@ export default function ExecutiveConferenceUI() {
 
       {/* Medical AI Agent Panel - positioned on the right side */}
       <div className="fixed right-4 top-20 z-30">
-        <MedicalAgentPanel transcript={transcript} />
+        <MedicalAgentPanel transcript={transcript} patientContext={patientContext} />
       </div>
 
       <div className="mt-4 p-4 bg-gray-900 rounded-xl">
