@@ -4,24 +4,19 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
-  Award,
-  Building2,
-  Calendar,
-  CheckCircle,
-  ExternalLink,
-  Mail,
-  Shield,
-  Users
+    Award,
+    Building2,
+    Calendar,
+    CheckCircle,
+    ExternalLink,
+    Mail,
+    Shield,
+    Users
 } from 'lucide-react'
 import Link from 'next/link'
-import { useSWR } from 'swr'
+import React from 'react'
 
 export default function About() {
-  const { data } = useSWR(
-    isConnecting ? `/api/livekit-token?identity=${user}` : null,
-    fetcher,
-  );
-
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <Header />

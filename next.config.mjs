@@ -8,7 +8,7 @@ const nextConfig = {
   },
   images: {
     formats: ['image/webp', 'image/avif'],
-    domains: ['agentm3c.agiledefensesystems.us'],
+    domains: ['agentm3c.agiledefensesystems.us', 'images.unsplash.com'],
   },
   compress: true,
   async headers() {
@@ -43,7 +43,18 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
+      {
+        source: '/spectra',
+        destination: '/project-spectra',
+        permanent: true,
+      },
     ];
+  },
+  reactStrictMode: true,
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
   },
 }
 

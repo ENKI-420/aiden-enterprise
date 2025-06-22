@@ -1,16 +1,16 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { OrbitControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Text, Html } from '@react-three/drei';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { Suspense, useEffect, useState } from 'react';
 
 // Dynamically import 3D components to avoid SSR issues
-const PyramidScene3D = dynamic(() => import('../../components/PyramidScene3D'), { ssr: false });
-const ResonanceController = dynamic(() => import('../../components/ResonanceController'), { ssr: false });
-const TelemetryDashboard = dynamic(() => import('../../components/TelemetryDashboard'), { ssr: false });
+const PyramidScene3D = dynamic(() => import('../../../components/PyramidScene3D'), { ssr: false });
+const ResonanceController = dynamic(() => import('../../../components/ResonanceController'), { ssr: false });
+const TelemetryDashboard = dynamic(() => import('../../../components/TelemetryDashboard'), { ssr: false });
 
 type SceneMode = 'geometric' | 'acoustic' | 'electromagnetic' | 'quantum';
 

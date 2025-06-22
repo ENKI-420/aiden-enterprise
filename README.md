@@ -5,18 +5,21 @@ A comprehensive AI-powered platform for mission-critical operations across healt
 ## 🚀 Recent Improvements
 
 ### Development Experience
+
 - ✅ Enhanced VS Code settings with natural language search
 - ✅ Added comprehensive development scripts
 - ✅ Improved TypeScript configuration
 - ✅ Added error boundaries and loading components
 
 ### SEO & Performance
+
 - ✅ Auto-generated sitemap.xml
 - ✅ Optimized robots.txt
 - ✅ Enhanced Next.js configuration with security headers
 - ✅ PWA manifest for mobile app capabilities
 
 ### Code Quality
+
 - ✅ Analytics tracking utilities
 - ✅ Constants management
 - ✅ Environment configuration template
@@ -56,17 +59,20 @@ aiden-enterprise/
 ## 🔧 Setup Instructions
 
 1. **Environment Setup**
+
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your configuration
    ```
 
 2. **Install Dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Development**
+
    ```bash
    npm run dev
    ```
@@ -97,7 +103,7 @@ The codebase currently has TypeScript errors that need attention:
 ## 📞 Contact
 
 **Devin Davis** - Founder & CEO
-Email: devin@agiledefensesystems.com
+Email: <devin@agiledefensesystems.com>
 Company: Agile Defense Systems, LLC
 CAGE Code: 9HuP5
 

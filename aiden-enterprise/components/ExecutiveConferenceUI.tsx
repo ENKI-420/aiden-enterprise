@@ -1,43 +1,21 @@
 /* eslint-disable no-undef, @typescript-eslint/no-explicit-any */
 "use client";
 
+import AgentWorkflowButton from "@/components/AgentWorkflowButton";
 import LiveKitConference from "@/components/LiveKitConference";
+import MedicalAgentPanel from "@/components/MedicalAgentPanel";
+import PatientContextBar from "@/components/PatientContextBar";
+import PersonalizedWelcomeSystem from "@/components/PersonalizedWelcomeSystem";
 import { Button } from "@/components/ui/button";
 import { exportPDF } from "@/lib/exportPdf";
 import { useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
 import * as THREE from 'three';
-import MedicalAgentPanel from "@/components/MedicalAgentPanel";
-import AgentWorkflowButton from "@/components/AgentWorkflowButton";
-import PatientContextBar from "@/components/PatientContextBar";
 
 const LAYOUTS = [
   { key: 'gallery', label: 'Gallery View' },
   { key: 'speaker', label: 'Speaker View' },
   { key: 'content', label: 'Content View' },
-];
-
-const ONBOARDING_STEPS = [
-  {
-    title: 'Welcome to Executive AI Conference',
-    content: 'This platform delivers secure, AI-powered video collaboration for defense, healthcare, and legal teams.'
-  },
-  {
-    title: 'Multi-Modal Conferencing',
-    content: 'Enjoy video, audio, screen sharing, and AR overlays. Switch layouts for gallery, speaker, or content focus.'
-  },
-  {
-    title: 'AI Copilot & Action Items',
-    content: 'Get real-time transcription, Q&A, action item extraction, and compliance flagging from our AI copilot.'
-  },
-  {
-    title: 'Enterprise-Grade Security',
-    content: 'All sessions are encrypted and compliant. Easily export transcripts and summaries for audit or review.'
-  },
-  {
-    title: 'Get Started',
-    content: 'Join a conference, try AR, and explore the executive features. Need help? Hover any control for tips.'
-  }
 ];
 
 export default function ExecutiveConferenceUI() {
@@ -46,8 +24,8 @@ export default function ExecutiveConferenceUI() {
   const [translated, setTranslated] = useState('');
   const [qaInput, setQaInput] = useState('');
   const [qaAnswer, setQaAnswer] = useState('');
-  const [onboardingOpen, setOnboardingOpen] = useState(true);
-  const [onboardingStep, setOnboardingStep] = useState(0);
+  const [showPersonalizedWelcome, setShowPersonalizedWelcome] = useState(false);
+  const [welcomeCompleted, setWelcomeCompleted] = useState(false);
   const [theme, setTheme] = useState('dark');
   const [layout, setLayout] = useState('gallery');
   const [videoEnabled, setVideoEnabled] = useState(false);
@@ -57,6 +35,7 @@ export default function ExecutiveConferenceUI() {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [screenStream, setScreenStream] = useState<MediaStream | null>(null);
   const mockRemoteVideoRef = useRef<HTMLVideoElement>(null);
+
   // LiveKit connection & token handling
   const [shouldJoin, setShouldJoin] = useState(false);
   const fetcher = (url: string) => fetch(url).then(res => res.json());
@@ -67,11 +46,6 @@ export default function ExecutiveConferenceUI() {
   const token = lk?.token ?? '';
   const isConnected = Boolean(token);
   const connect = () => setShouldJoin(true);
-
-  // Automatically join once the page loads (useful for demos / automation)
-  useEffect(() => {
-    setShouldJoin(true);
-  }, []);
 
   // Mock remote participant list to keep UI functional
   const remoteParticipants = [
@@ -85,12 +59,63 @@ export default function ExecutiveConferenceUI() {
   const [transcript, setTranscript] = useState('');
   const [patientContext, setPatientContext] = useState<any>(null);
 
+  // Automatically join once the page loads (useful for demos / automation)
+  useEffect(() => {
+    setShouldJoin(true);
+  }, []);
+
+    // Initialize personalized welcome system
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem('personalizedWelcomeCompleted');
+    const isFirstVisit = !localStorage.getItem('visitCount');
+
+    // Show personalized welcome for first-time users or returning users with new features
+    if (isFirstVisit || (!hasSeenWelcome || (hasSeenWelcome && shouldShowEnhancedWelcome()))) {
+      setTimeout(() => {
+        setShowPersonalizedWelcome(true);
+      }, 2000); // Delay to allow page to settle
+    }
+  }, []);
+
+  const shouldShowEnhancedWelcome = (): boolean => {
+    const lastWelcome = localStorage.getItem('lastWelcomeDate');
+    const now = new Date();
+    const lastDate = lastWelcome ? new Date(lastWelcome) : null;
+
+    // Show enhanced welcome if it's been more than 7 days
+    return !lastDate || (now.getTime() - lastDate.getTime()) > (7 * 24 * 60 * 60 * 1000);
+  };
+
+  const handleWelcomeComplete = (insights: any) => {
+    setShowPersonalizedWelcome(false);
+    setWelcomeCompleted(true);
+
+    // Store completion data for future personalization
+    localStorage.setItem('personalizedWelcomeCompleted', 'true');
+    localStorage.setItem('lastWelcomeDate', new Date().toISOString());
+    localStorage.setItem('welcomeInsights', JSON.stringify(insights));
+
+    console.log('Welcome completed with insights:', insights);
+
+    // Apply any preference updates from the welcome flow
+    if (insights.voiceEnabled) {
+      // Voice was enabled during welcome
+      console.log('Voice features enabled');
+    }
+  };
+
+  const handleWelcomeDismiss = () => {
+    setShowPersonalizedWelcome(false);
+
+    // Mark as seen but not completed
+    localStorage.setItem('welcomeDismissed', new Date().toISOString());
+  };
+
   // Speech-to-text pipeline (Web Speech API as a stand-in for server STT)
   useEffect(() => {
     if (typeof window === 'undefined' || !isConnected) return;
 
     // Prefer native SpeechRecognition where available.
-
     const SpeechRecognition: any =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) return;
@@ -144,22 +169,6 @@ export default function ExecutiveConferenceUI() {
       if (arRef.current) arRef.current.innerHTML = '';
     };
   }, [arEnabled]);
-
-  // Onboarding modal logic (multi-step)
-  useEffect(() => {
-    if (window && window.localStorage) {
-      const seen = localStorage.getItem('onboardingSeen');
-      if (seen) setOnboardingOpen(false);
-    }
-  }, []);
-  const handleOnboardingClose = () => {
-    setOnboardingOpen(false);
-    if (window && window.localStorage) {
-      localStorage.setItem('onboardingSeen', '1');
-    }
-  };
-  const nextStep = () => setOnboardingStep(s => Math.min(s + 1, ONBOARDING_STEPS.length - 1));
-  const prevStep = () => setOnboardingStep(s => Math.max(s - 1, 0));
 
   // Theme switcher
   useEffect(() => {
@@ -249,24 +258,20 @@ export default function ExecutiveConferenceUI() {
   const patientId = urlParams?.get('patient');
   const mrn = urlParams?.get('mrn');
 
+  // Determine user role from context (this could be from auth or props)
+  const userRole = patientContext ? 'physician' : 'healthcare_professional';
+
   return (
     <div className={theme === 'dark' ? 'bg-gray-950 text-white min-h-screen' : 'bg-white text-gray-900 min-h-screen'}>
-      {/* Onboarding Modal (multi-step) */}
-      {onboardingOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="bg-white text-black rounded-xl p-8 max-w-md shadow-xl">
-            <h2 className="text-2xl font-bold mb-4">{ONBOARDING_STEPS[onboardingStep].title}</h2>
-            <div className="mb-4 text-sm">{ONBOARDING_STEPS[onboardingStep].content}</div>
-            <div className="flex gap-2 justify-between">
-              <button onClick={prevStep} disabled={onboardingStep === 0} className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-bold disabled:opacity-50">Back</button>
-              {onboardingStep < ONBOARDING_STEPS.length - 1 ? (
-                <button onClick={nextStep} className="px-4 py-2 rounded bg-blue-600 text-white font-bold">Next</button>
-              ) : (
-                <button onClick={handleOnboardingClose} className="px-4 py-2 rounded bg-blue-600 text-white font-bold">Finish</button>
-              )}
-            </div>
-          </div>
-        </div>
+
+      {/* Personalized Welcome System */}
+      {showPersonalizedWelcome && (
+        <PersonalizedWelcomeSystem
+          onComplete={handleWelcomeComplete}
+          onDismiss={handleWelcomeDismiss}
+          patientContext={patientContext}
+          userRole={userRole}
+        />
       )}
 
       {/* Theme Switcher */}
@@ -304,36 +309,65 @@ export default function ExecutiveConferenceUI() {
         ))}
       </div>
 
-      {/* Main Controls with Tooltips and accessibility */}
+      {/* Enhanced Controls with contextual help */}
       <div className="flex gap-4 mb-4 flex-wrap">
         <div className="relative group">
-          <Button onClick={() => setArEnabled(v => !v)} aria-label="Toggle AR overlay" tabIndex={0}>{arEnabled ? 'Disable AR Overlay' : 'Enable AR Overlay'}</Button>
-          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Toggle AR overlay</span>
+          <Button onClick={() => setArEnabled(v => !v)} aria-label="Toggle AR overlay" tabIndex={0}>
+            {arEnabled ? 'Disable AR Overlay' : 'Enable AR Overlay'}
+          </Button>
+          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition z-50">
+            {welcomeCompleted ? 'AR overlay for enhanced visualization' : 'Toggle AR overlay'}
+          </span>
         </div>
+
         <div className="relative group">
           <Button onClick={handleTranslate} aria-label="Translate transcript" tabIndex={0}>Translate</Button>
-          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Translate transcript</span>
+          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition z-50">
+            {welcomeCompleted ? 'AI-powered real-time translation' : 'Translate transcript'}
+          </span>
         </div>
+
         <div className="relative group">
           <Button onClick={() => exportPDF()} aria-label="Export as PDF" tabIndex={0}>Export Summary</Button>
-          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Export as PDF</span>
+          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition z-50">
+            {welcomeCompleted ? 'Generate comprehensive session summary' : 'Export as PDF'}
+          </span>
         </div>
+
         <div className="relative group">
           <Button onClick={handleQa} aria-label="Ask AI about meeting" tabIndex={0}>Q&amp;A</Button>
-          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Ask AI about meeting</span>
+          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition z-50">
+            {welcomeCompleted ? 'Intelligent Q&A with contextual insights' : 'Ask AI about meeting'}
+          </span>
         </div>
+
         <div className="relative group">
-          <Button onClick={handleStartVideo} aria-label="Toggle camera" tabIndex={0}>{videoEnabled ? 'Stop Video' : 'Start Video'}</Button>
-          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Toggle camera</span>
+          <Button onClick={handleStartVideo} aria-label="Toggle camera" tabIndex={0}>
+            {videoEnabled ? 'Stop Video' : 'Start Video'}
+          </Button>
+          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition z-50">
+            {welcomeCompleted ? 'HD video with AI background processing' : 'Toggle camera'}
+          </span>
         </div>
+
         <div className="relative group">
-          <Button onClick={handleShareScreen} aria-label="Share your screen" tabIndex={0}>{screenEnabled ? 'Stop Sharing' : 'Share Screen'}</Button>
-          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Share your screen</span>
+          <Button onClick={handleShareScreen} aria-label="Share your screen" tabIndex={0}>
+            {screenEnabled ? 'Stop Sharing' : 'Share Screen'}
+          </Button>
+          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition z-50">
+            {welcomeCompleted ? 'Smart screen sharing with content recognition' : 'Share your screen'}
+          </span>
         </div>
+
         <div className="relative group">
-          <Button onClick={() => connect()} disabled={isConnected} aria-label="Join Conference" tabIndex={0}>{isConnected ? 'Connected' : 'Join Conference'}</Button>
-          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Join the LiveKit conference</span>
+          <Button onClick={() => connect()} disabled={isConnected} aria-label="Join Conference" tabIndex={0}>
+            {isConnected ? 'Connected' : 'Join Conference'}
+          </Button>
+          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition z-50">
+            {welcomeCompleted ? 'Enterprise-grade secure conferencing' : 'Join the LiveKit conference'}
+          </span>
         </div>
+
         <div className="relative group">
           <AgentWorkflowButton
             onWorkflowComplete={(results) => {
@@ -341,8 +375,36 @@ export default function ExecutiveConferenceUI() {
               // Could update transcript or show results in UI
             }}
           />
-          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Run AI analysis workflows</span>
+          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition z-50">
+            {welcomeCompleted ? 'Advanced AI agent orchestration workflows' : 'Run AI analysis workflows'}
+          </span>
         </div>
+
+        <div className="relative group">
+          <Button onClick={() => window.open('/ai-coding-suite', '_blank')} aria-label="AI Coding Suite" tabIndex={0}>
+            AI Coding Suite
+          </Button>
+          <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition z-50">
+            {welcomeCompleted ? 'Full-featured AI development environment' : 'Open AI Coding Suite'}
+          </span>
+        </div>
+
+        {/* Re-trigger welcome button for returning users */}
+        {welcomeCompleted && (
+          <div className="relative group">
+            <Button
+              onClick={() => setShowPersonalizedWelcome(true)}
+              variant="outline"
+              aria-label="Show welcome tour again"
+              className="border-blue-500 text-blue-500 hover:bg-blue-50"
+            >
+              🎯 Tour
+            </Button>
+            <span className="absolute left-1/2 -translate-x-1/2 mt-2 w-max bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition z-50">
+              Restart personalized welcome experience
+            </span>
+          </div>
+        )}
       </div>
 
       {/* AR Overlay */}
@@ -356,7 +418,12 @@ export default function ExecutiveConferenceUI() {
 
       <div className="mt-4 p-4 bg-gray-900 rounded-xl">
         <div className="font-bold mb-2">AI Q&amp;A</div>
-        <input value={qaInput} onChange={e => setQaInput(e.target.value)} placeholder="Ask a question about this meeting..." className="px-2 py-1 rounded bg-gray-800 text-white w-2/3" />
+        <input
+          value={qaInput}
+          onChange={e => setQaInput(e.target.value)}
+          placeholder={welcomeCompleted ? "Ask anything about this session, patient data, or clinical insights..." : "Ask a question about this meeting..."}
+          className="px-2 py-1 rounded bg-gray-800 text-white w-2/3"
+        />
         <Button onClick={handleQa} className="ml-2">Ask</Button>
         {qaAnswer && <div className="mt-2 text-green-400">{qaAnswer}</div>}
       </div>

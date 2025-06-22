@@ -79,7 +79,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/spectra" className="text-slate-400 hover:text-white transition-colors">
+                <Link href="/project-spectra" className="text-slate-400 hover:text-white transition-colors">
                   Project Spectra
                 </Link>
               </li>
@@ -90,7 +90,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/resources" className="text-slate-400 hover:text-white transition-colors">
-                  Documentation
+                  Resources
                 </Link>
               </li>
               <li>

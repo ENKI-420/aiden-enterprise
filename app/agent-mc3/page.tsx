@@ -1,7 +1,8 @@
 'use client';
-import Link from 'next/link';
-import { useState } from 'react';
+import AICopilotSidebar from '@/components/AICopilotSidebar';
+import LiveDataPanel from '@/components/LiveDataPanel';
 import WhiteboardPanel from '@/components/WhiteboardPanel';
+import { useState } from 'react';
 
 export default function AgentMC3Page() {
   const [whiteboardOpen, setWhiteboardOpen] = useState(false);
@@ -38,7 +39,6 @@ export default function AgentMC3Page() {
           <p className="mb-4 text-gray-300">Try multi-modal input, model switching, and see real-time AI responses below.</p>
           {/* Multi-modal input and model switcher (reuse AICopilotSidebar) */}
           <div className="mb-4">
-            {/* @ts-expect-error: Dynamic import in user project */}
             <AICopilotSidebar />
           </div>
           <div className="flex gap-4 mt-4">
@@ -50,7 +50,6 @@ export default function AgentMC3Page() {
         {/* Sidebar: Live Data & Agent Actions */}
         <aside className="w-full lg:w-96 bg-gray-900/80 p-6 flex flex-col border-l border-blue-900 rounded-xl shadow-lg min-h-[400px]">
           <h4 className="text-lg font-bold mb-4">Live Data & Agent Actions</h4>
-          {/* @ts-expect-error: Dynamic import in user project */}
           <LiveDataPanel />
           <div className="mt-4 text-xs text-gray-400">Context-aware agent actions and alerts will appear here.</div>
         </aside>

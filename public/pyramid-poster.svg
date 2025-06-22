@@ -1,0 +1,30 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1920" height="1080" fill="#0F172A"/>
+
+  <!-- Gradient background -->
+  <defs>
+    <radialGradient id="bg-gradient" cx="0.5" cy="0.5" r="0.8">
+      <stop offset="0%" stop-color="#FCD34D" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg-gradient)"/>
+
+  <!-- Pyramid shape -->
+  <path d="M960 300 L600 780 L1320 780 Z" fill="#FCD34D" fill-opacity="0.2" stroke="#FCD34D" stroke-width="2"/>
+
+  <!-- Energy beams -->
+  <line x1="960" y1="300" x2="960" y2="100" stroke="#60A5FA" stroke-width="4" opacity="0.8"/>
+  <line x1="960" y1="300" x2="860" y2="150" stroke="#60A5FA" stroke-width="2" opacity="0.6"/>
+  <line x1="960" y1="300" x2="1060" y2="150" stroke="#60A5FA" stroke-width="2" opacity="0.6"/>
+
+  <!-- Title -->
+  <text x="960" y="900" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#FCD34D">
+    Project Spectra: The Weapons Hypothesis
+  </text>
+
+  <!-- Subtitle -->
+  <text x="960" y="950" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#CBD5E1">
+    Click to explore ancient energy technologies
+  </text>
+</svg>
