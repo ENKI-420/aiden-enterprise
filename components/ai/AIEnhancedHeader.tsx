@@ -30,7 +30,6 @@ interface AIEnhancedHeaderProps {
   showNotifications?: boolean;
   showUserMenu?: boolean;
   className?: string;
-  variant?: 'default' | 'glass' | 'gradient';
 }
 
 interface PageInfo {
@@ -123,15 +122,14 @@ export default function AIEnhancedHeader({
   showNotifications = true,
   showUserMenu = true,
   className,
-  variant = 'default',
 }: AIEnhancedHeaderProps) {
   const pathname = usePathname();
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('dark');
-  const [notifications, setNotifications] = useState(3);
+  const [notifications] = useState(3);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [aiInsights, setAiInsights] = useState<string[]>([]);
 
-  const currentPage = pageInfoMap[pathname] || pageInfoMap['/'];
+  const currentPage = pageInfoMap[pathname || '/'] || pageInfoMap['/'];
 
   useEffect(() => {
     // Simulate AI insights based on current page and user role
@@ -170,13 +168,21 @@ export default function AIEnhancedHeader({
 
   const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
     setTheme(newTheme);
-    // Apply theme change logic here
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else if (newTheme === 'light') {
-      document.documentElement.classList.remove('dark');
-    }
   };
+
+  // Handle theme changes with useEffect to avoid SSR issues
+  useEffect(() => {
+
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      if (theme === 'dark') {
+        // eslint-disable-next-line no-undef
+        document.documentElement.classList.add('dark');
+      } else if (theme === 'light') {
+        // eslint-disable-next-line no-undef
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  }, [theme]);
 
   const getCategoryColor = (category: string) => {
     switch (category) {

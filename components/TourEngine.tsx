@@ -37,9 +37,16 @@ export default function TourEngine({
 
   // Initialize tour state
   useEffect(() => {
+    // eslint-disable-next-line no-undef
+    if (typeof window === 'undefined') return;
+
+    // eslint-disable-next-line no-undef
     const savedProgress = localStorage.getItem('tourProgress');
+    // eslint-disable-next-line no-undef
     const savedInsights = localStorage.getItem('tourInsights');
+    // eslint-disable-next-line no-undef
     const lastRole = localStorage.getItem('lastTourRole');
+    // eslint-disable-next-line no-undef
     const lastFlow = localStorage.getItem('lastTourFlow');
 
     if (savedProgress) {
@@ -60,12 +67,16 @@ export default function TourEngine({
 
   // Save progress to localStorage
   useEffect(() => {
-    if (Object.keys(progress).length > 0) {
-      localStorage.setItem('tourProgress', JSON.stringify(progress));
-      localStorage.setItem('lastTourRole', userRole);
-      if (currentFlow) {
-        localStorage.setItem('lastTourFlow', currentFlow);
-      }
+    // eslint-disable-next-line no-undef
+    if (typeof window === 'undefined' || Object.keys(progress).length === 0) return;
+
+    // eslint-disable-next-line no-undef
+    localStorage.setItem('tourProgress', JSON.stringify(progress));
+    // eslint-disable-next-line no-undef
+    localStorage.setItem('lastTourRole', userRole);
+    if (currentFlow) {
+      // eslint-disable-next-line no-undef
+      localStorage.setItem('lastTourFlow', currentFlow);
     }
   }, [progress, userRole, currentFlow]);
 
@@ -140,7 +151,12 @@ export default function TourEngine({
   }, [isActive, currentStepIndex, currentSteps]);
 
   const shouldAutoStart = (currentRole: string, lastRole: string | null, lastFlow: string | null): boolean => {
+    // eslint-disable-next-line no-undef
+    if (typeof window === 'undefined') return false;
+
+    // eslint-disable-next-line no-undef
     const visitCount = parseInt(localStorage.getItem('visitCount') || '0');
+    // eslint-disable-next-line no-undef
     const lastVisit = localStorage.getItem('lastVisit');
     const now = new Date();
 
@@ -245,18 +261,30 @@ export default function TourEngine({
     setIsActive(false);
 
     // Update visit tracking
-    const visitCount = parseInt(localStorage.getItem('visitCount') || '0');
-    localStorage.setItem('visitCount', (visitCount + 1).toString());
-    localStorage.setItem('lastVisit', new Date().toISOString());
-    localStorage.setItem('tourCompleted', 'true');
-    localStorage.setItem('tourInsights', JSON.stringify(insights));
+    // eslint-disable-next-line no-undef
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      const visitCount = parseInt(localStorage.getItem('visitCount') || '0');
+      // eslint-disable-next-line no-undef
+      localStorage.setItem('visitCount', (visitCount + 1).toString());
+      // eslint-disable-next-line no-undef
+      localStorage.setItem('lastVisit', new Date().toISOString());
+      // eslint-disable-next-line no-undef
+      localStorage.setItem('tourCompleted', 'true');
+      // eslint-disable-next-line no-undef
+      localStorage.setItem('tourInsights', JSON.stringify(insights));
+    }
 
     onComplete?.(insights);
   }, [insights, onComplete]);
 
   const dismissTour = useCallback(() => {
     setIsActive(false);
-    localStorage.setItem('tourDismissed', new Date().toISOString());
+    // eslint-disable-next-line no-undef
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      localStorage.setItem('tourDismissed', new Date().toISOString());
+    }
     onDismiss?.();
   }, [onDismiss]);
 

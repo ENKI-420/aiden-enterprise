@@ -47,32 +47,115 @@ interface WelcomeStep {
   };
 }
 
-interface AIResponse {
-  steps: WelcomeStep[];
-  insights: {
-    userPersona: string;
-    recommendedFeatures: string[];
-    engagementStrategy: string;
-    conversionOptimization: string[];
-    personalizationScore: number;
-  };
-}
+const ENGAGEMENT_PATTERNS = {
+  SOCIAL_PROOF: 'social_proof',
+  SCARCITY: 'scarcity',
+  PERSONALIZATION: 'personalization',
+  ACHIEVEMENT: 'achievement',
+  CURIOSITY: 'curiosity',
+  AUTHORITY: 'authority',
+  RECIPROCITY: 'reciprocity',
+  COMMITMENT: 'commitment',
+  LIKING: 'liking',
+  CONSENSUS: 'consensus'
+};
+
+// Industry-specific content templates
+const INDUSTRY_CONTENT = {
+  healthcare: {
+    welcome: {
+      title: "Welcome to AI-Powered Healthcare",
+      content: "Transform patient care with intelligent automation, predictive analytics, and seamless FHIR integration.",
+      features: ["Patient Data Management", "Clinical Decision Support", "Workflow Automation"]
+    },
+    features: [
+      {
+        id: "patient_analytics",
+        title: "Patient Analytics",
+        description: "AI-driven insights for personalized care plans and predictive health outcomes."
+      },
+      {
+        id: "clinical_automation",
+        title: "Clinical Automation",
+        description: "Streamline routine tasks and focus on what matters most - patient care."
+      },
+      {
+        id: "interoperability",
+        title: "FHIR Integration",
+        description: "Seamless data exchange across healthcare systems and providers."
+      }
+    ]
+  },
+  defense: {
+    welcome: {
+      title: "Mission-Critical Intelligence Platform",
+      content: "Advanced AI solutions for defense operations, threat detection, and strategic decision-making.",
+      features: ["Threat Analysis", "Strategic Planning", "Real-time Intelligence"]
+    },
+    features: [
+      {
+        id: "threat_detection",
+        title: "Threat Detection",
+        description: "Real-time analysis and automated threat identification across multiple data sources."
+      },
+      {
+        id: "strategic_planning",
+        title: "Strategic Planning",
+        description: "AI-powered scenario modeling and decision support for complex operations."
+      },
+      {
+        id: "intelligence_fusion",
+        title: "Intelligence Fusion",
+        description: "Multi-domain data integration and analysis for comprehensive situational awareness."
+      }
+    ]
+  },
+  finance: {
+    welcome: {
+      title: "Next-Generation Financial AI",
+      content: "Revolutionize risk management, compliance, and customer engagement with intelligent automation.",
+      features: ["Risk Analysis", "Compliance Automation", "Customer Intelligence"]
+    },
+    features: [
+      {
+        id: "risk_management",
+        title: "Risk Management",
+        description: "Advanced risk modeling and real-time monitoring for proactive decision-making."
+      },
+      {
+        id: "compliance_automation",
+        title: "Compliance Automation",
+        description: "Automated regulatory compliance checks and reporting to reduce operational risk."
+      },
+      {
+        id: "customer_intelligence",
+        title: "Customer Intelligence",
+        description: "AI-driven customer insights and personalized engagement strategies."
+      }
+    ]
+  }
+};
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { userContext, userRole, industry, isFirstVisit, customSteps } = body;
 
-    // AI-powered personalization logic
-    const personalizedSteps = await generatePersonalizedSteps(userContext, userRole, industry, isFirstVisit);
-    const insights = await generateUserInsights(userContext, userRole, industry);
+    // Generate personalized steps based on user context and industry
+    const personalizedSteps = generatePersonalizedSteps(userContext, userRole, industry, isFirstVisit);
 
-    const response: AIResponse = {
-      steps: customSteps || personalizedSteps,
-      insights
-    };
+    // Generate user insights and recommendations
+    const insights = generateUserInsights(userContext, industry);
 
-    return NextResponse.json(response);
+    // Track analytics
+    await trackWelcomeAnalytics(userContext, industry, isFirstVisit);
+
+    return NextResponse.json({
+      steps: personalizedSteps,
+      insights,
+      success: true
+    });
+
   } catch (error) {
     console.error('Enhanced welcome API error:', error);
     return NextResponse.json(
@@ -82,31 +165,24 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function generatePersonalizedSteps(
+function generatePersonalizedSteps(
   userContext: UserContext,
   userRole: string,
   industry: string,
   isFirstVisit: boolean
-): Promise<WelcomeStep[]> {
+): WelcomeStep[] {
   const steps: WelcomeStep[] = [];
+  const industryContent = INDUSTRY_CONTENT[industry as keyof typeof INDUSTRY_CONTENT] || INDUSTRY_CONTENT.healthcare;
 
-  // Industry-specific welcome content
-  const industryContent = getIndustryContent(industry, userRole);
-
-  // Time-based personalization
-  const timeBasedGreeting = getTimeBasedGreeting(userContext.timeOfDay);
-
-  // Device-specific optimizations
-  const deviceOptimizations = getDeviceOptimizations(userContext.deviceType);
-
-  // Welcome step with advanced personalization
+  // Welcome step with industry-specific content
   if (userContext.isReturningUser) {
     steps.push({
       id: 'welcome_return',
       title: `Welcome back, ${userRole}! 👋`,
-      content: `${timeBasedGreeting} Great to see you again. Based on your ${userContext.visitCount > 1 ? `${userContext.visitCount} previous visits` : 'last visit'}, I've prepared some enhanced features that align with your usage patterns and professional needs.`,
+      content: `Great to see you again. Based on your ${userContext.visitCount > 1 ? `${userContext.visitCount} previous visits` : 'last visit'}, I've prepared enhanced ${industry} features that align with your workflow patterns.`,
+      audioContent: `Welcome back! I've analyzed your previous interactions and prepared personalized insights to enhance your ${industry} workflow.`,
       interactionType: 'interactive',
-      psychPattern: 'personalization',
+      psychPattern: ENGAGEMENT_PATTERNS.PERSONALIZATION,
       duration: 6000,
       priority: 10,
       visualElements: {
@@ -114,6 +190,18 @@ async function generatePersonalizedSteps(
         animation: 'pulse',
         color: 'blue',
         background: 'gradient'
+      },
+      actions: {
+        primary: {
+          label: 'Show me what\'s new',
+          action: () => {},
+          style: 'gradient'
+        },
+        secondary: {
+          label: 'Skip to dashboard',
+          action: () => {},
+          style: 'outline'
+        }
       },
       engagementMetrics: {
         expectedTimeOnStep: 6,
@@ -124,34 +212,41 @@ async function generatePersonalizedSteps(
   } else {
     steps.push({
       id: 'welcome_new',
-      title: `Welcome to ${industryContent.title}`,
-      content: `${timeBasedGreeting} ${industryContent.welcomeMessage}`,
+      title: industryContent.welcome.title,
+      content: `${industryContent.welcome.content} ${getTimeBasedGreeting(userContext.timeOfDay)}`,
+      audioContent: `Welcome to the future of ${industry} technology. I'm your AI assistant, and I'm excited to help you discover how this platform can transform your daily workflow.`,
       interactionType: 'interactive',
-      psychPattern: 'social_proof',
+      psychPattern: ENGAGEMENT_PATTERNS.SOCIAL_PROOF,
       duration: 7000,
       priority: 10,
       visualElements: {
-        icon: industryContent.icon,
+        icon: '🚀',
         animation: 'bounce',
         color: 'purple',
         background: 'gradient'
       },
-      engagementMetrics: {
-        expectedTimeOnStep: 7,
-        interactionPoints: ['primary_action', 'secondary_action'],
-        successCriteria: ['user_engagement', 'platform_familiarity']
+      actions: {
+        primary: {
+          label: 'Start exploring',
+          action: () => {},
+          style: 'gradient'
+        },
+        secondary: {
+          label: 'Learn more',
+          action: () => {},
+          style: 'outline'
+        }
       }
     });
   }
 
-  // Feature discovery based on role and industry
-  const roleFeatures = getRoleFeatures(userRole, industry);
+  // Industry-specific feature discovery
   steps.push({
     id: 'feature_discovery',
-    title: 'Discover Powerful Features',
-    content: `Based on your role as a ${userRole}, here are the most relevant features for your workflow: ${roleFeatures.join(', ')}`,
+    title: `Discover ${industry} Features`,
+    content: `Based on your role as a ${userRole}, here are the most relevant ${industry} features for your workflow:`,
     interactionType: 'interactive',
-    psychPattern: 'curiosity',
+    psychPattern: ENGAGEMENT_PATTERNS.CURIOSITY,
     duration: 8000,
     priority: 9,
     visualElements: {
@@ -159,217 +254,195 @@ async function generatePersonalizedSteps(
       animation: 'fade',
       color: 'green'
     },
-    engagementMetrics: {
-      expectedTimeOnStep: 8,
-      interactionPoints: ['feature_exploration', 'interaction'],
-      successCriteria: ['feature_awareness', 'engagement']
+    actions: {
+      primary: {
+        label: 'Explore features',
+        action: () => {}
+      },
+      secondary: {
+        label: 'Skip for now',
+        action: () => {}
+      }
     }
   });
 
-  // Social proof with industry-specific testimonials
-  const socialProof = getSocialProof(industry);
+  // Feature showcase based on industry
+  industryContent.features.forEach((feature, index) => {
+    steps.push({
+      id: `feature_${feature.id}`,
+      title: feature.title,
+      content: feature.description,
+      interactionType: 'passive',
+      psychPattern: ENGAGEMENT_PATTERNS.AUTHORITY,
+      duration: 5000,
+      priority: 8 - index,
+      visualElements: {
+        icon: getFeatureIcon(feature.id),
+        animation: 'fade'
+      }
+    });
+  });
+
+  // Social proof step
   steps.push({
     id: 'social_proof',
-    title: socialProof.title,
-    content: socialProof.content,
+    title: 'Trusted by Industry Leaders',
+    content: `Join thousands of ${industry} professionals who have already transformed their workflow with our AI platform.`,
     interactionType: 'passive',
-    psychPattern: 'social_proof',
+    psychPattern: ENGAGEMENT_PATTERNS.SOCIAL_PROOF,
     duration: 5000,
-    priority: 8,
+    priority: 7,
     visualElements: {
       icon: '🏆',
       animation: 'pulse'
     }
   });
 
-  // Call to action with personalized messaging
+  // Call to action step
   steps.push({
     id: 'call_to_action',
     title: 'Ready to Get Started?',
-    content: `Your personalized ${industryContent.dashboardName} is ready. Let's begin your enhanced workflow experience.`,
+    content: `Your personalized ${industry} dashboard is ready. Let's begin your enhanced workflow experience.`,
     interactionType: 'interactive',
-    psychPattern: 'commitment',
+    psychPattern: ENGAGEMENT_PATTERNS.COMMITMENT,
     duration: 4000,
-    priority: 7,
+    priority: 6,
     visualElements: {
       icon: '✨',
       animation: 'sparkle'
     },
-    engagementMetrics: {
-      expectedTimeOnStep: 4,
-      interactionPoints: ['primary_action'],
-      successCriteria: ['conversion', 'engagement']
+    actions: {
+      primary: {
+        label: 'Get Started',
+        action: () => {}
+      }
     }
   });
 
   return steps.sort((a, b) => b.priority - a.priority);
 }
 
-async function generateUserInsights(
-  userContext: UserContext,
-  userRole: string,
-  industry: string
-) {
-  const persona = determineUserPersona(userContext);
-  const recommendedFeatures = getRecommendedFeatures(userRole, industry, userContext);
-  const engagementStrategy = determineEngagementStrategy(userContext);
-  const conversionOptimization = getConversionOptimization(userContext);
-
+function generateUserInsights(userContext: UserContext, industry: string) {
   return {
-    userPersona: persona,
-    recommendedFeatures,
-    engagementStrategy,
-    conversionOptimization,
-    personalizationScore: calculatePersonalizationScore(userContext)
+    recommendedFeatures: getRecommendedFeatures(userContext, industry),
+    engagementStrategy: getEngagementStrategy(userContext),
+    personalizationLevel: calculatePersonalizationLevel(userContext),
+    predictedEngagement: predictEngagement(userContext),
+    optimizationSuggestions: getOptimizationSuggestions(userContext)
   };
 }
 
-function getIndustryContent(industry: string, userRole: string) {
-  const content = {
-    healthcare: {
-      title: 'Advanced Healthcare AI Platform',
-      welcomeMessage: 'You\'re joining thousands of healthcare professionals who are transforming patient care with AI-powered insights and automation.',
-      icon: '🏥',
-      dashboardName: 'clinical dashboard'
-    },
-    defense: {
-      title: 'Mission-Critical Defense Intelligence',
-      welcomeMessage: 'Join defense professionals leveraging AI for real-time threat analysis and strategic decision-making.',
-      icon: '🛡️',
-      dashboardName: 'mission dashboard'
-    },
-    finance: {
-      title: 'Next-Gen Financial AI Suite',
-      welcomeMessage: 'Transform your financial operations with AI-driven risk analysis and automated compliance.',
-      icon: '💰',
-      dashboardName: 'financial dashboard'
-    }
-  };
+function getRecommendedFeatures(userContext: UserContext, industry: string) {
+  const features = [];
 
-  return content[industry as keyof typeof content] || content.healthcare;
+  if (userContext.techSavviness === 'advanced') {
+    features.push('Advanced Analytics', 'API Integration', 'Custom Workflows');
+  } else if (userContext.techSavviness === 'intermediate') {
+    features.push('Dashboard Customization', 'Automated Reports', 'Team Collaboration');
+  } else {
+    features.push('Guided Tours', 'Templates', 'Help Documentation');
+  }
+
+  return features;
+}
+
+function getEngagementStrategy(userContext: UserContext) {
+  if (userContext.engagementStyle === 'direct') {
+    return 'minimal_interaction';
+  } else if (userContext.engagementStyle === 'exploratory') {
+    return 'feature_discovery';
+  } else {
+    return 'guided_experience';
+  }
+}
+
+function calculatePersonalizationLevel(userContext: UserContext) {
+  let level = 50; // Base level
+
+  if (userContext.isReturningUser) level += 20;
+  if (userContext.visitCount > 3) level += 15;
+  if (userContext.preferredInteraction === 'mixed') level += 10;
+
+  return Math.min(100, level);
+}
+
+function predictEngagement(userContext: UserContext) {
+  let score = 70; // Base score
+
+  if (userContext.attentionSpan === 'long') score += 15;
+  if (userContext.cognitiveLoad === 'low') score += 10;
+  if (userContext.urgencyLevel === 'low') score += 5;
+
+  return Math.min(100, score);
+}
+
+function getOptimizationSuggestions(userContext: UserContext) {
+  const suggestions = [];
+
+  if (userContext.deviceType === 'mobile') {
+    suggestions.push('Optimize for mobile interaction patterns');
+  }
+
+  if (userContext.attentionSpan === 'short') {
+    suggestions.push('Use concise, scannable content');
+  }
+
+  if (userContext.cognitiveLoad === 'high') {
+    suggestions.push('Reduce complexity and provide clear navigation');
+  }
+
+  return suggestions;
 }
 
 function getTimeBasedGreeting(timeOfDay: string) {
-  const greetings = {
-    morning: 'Good morning! Perfect timing to start your day with enhanced productivity.',
-    afternoon: 'Good afternoon! Let\'s optimize your workflow with intelligent automation.',
-    evening: 'Good evening! Let\'s make your evening workflow more efficient.',
-    night: 'Working late? Let\'s streamline your night shift with AI assistance.'
+  switch (timeOfDay) {
+    case 'morning':
+      return 'Perfect timing to start your day with enhanced productivity.';
+    case 'afternoon':
+      return 'Great time to optimize your workflow and boost efficiency.';
+    case 'evening':
+      return 'Let\'s make your evening workflow more efficient and productive.';
+    default:
+      return 'Welcome to the future of professional technology.';
+  }
+}
+
+function getFeatureIcon(featureId: string) {
+  const icons: Record<string, string> = {
+    patient_analytics: '📊',
+    clinical_automation: '⚡',
+    interoperability: '🔗',
+    threat_detection: '🛡️',
+    strategic_planning: '🎯',
+    intelligence_fusion: '🧠',
+    risk_management: '📈',
+    compliance_automation: '✅',
+    customer_intelligence: '👥'
   };
 
-  return greetings[timeOfDay as keyof typeof greetings] || greetings.afternoon;
+  return icons[featureId] || '✨';
 }
 
-function getDeviceOptimizations(deviceType: string) {
-  return {
-    mobile: { touchOptimized: true, simplifiedUI: true },
-    tablet: { touchOptimized: true, responsiveLayout: true },
-    desktop: { fullFeatures: true, keyboardShortcuts: true }
-  }[deviceType] || {};
-}
+async function trackWelcomeAnalytics(userContext: UserContext, industry: string, isFirstVisit: boolean) {
+  try {
+    // In a real implementation, this would send data to your analytics service
+    const analyticsData = {
+      timestamp: new Date().toISOString(),
+      userContext,
+      industry,
+      isFirstVisit,
+      event: 'welcome_generated'
+    };
 
-function getRoleFeatures(userRole: string, industry: string) {
-  const roleFeatures = {
-    healthcare: {
-      doctor: ['Patient Analytics', 'Clinical Decision Support', 'Automated Documentation'],
-      nurse: ['Patient Monitoring', 'Care Coordination', 'Medication Management'],
-      admin: ['Workflow Automation', 'Resource Management', 'Compliance Tracking']
-    },
-    defense: {
-      analyst: ['Threat Intelligence', 'Pattern Recognition', 'Real-time Monitoring'],
-      commander: ['Strategic Planning', 'Resource Allocation', 'Mission Control'],
-      operator: ['Field Operations', 'Communication Tools', 'Situational Awareness']
-    },
-    finance: {
-      analyst: ['Risk Assessment', 'Market Analysis', 'Portfolio Optimization'],
-      manager: ['Team Management', 'Performance Tracking', 'Strategic Planning'],
-      trader: ['Real-time Trading', 'Market Signals', 'Risk Management']
-    }
-  };
+    // Example: Send to analytics service
+    // await fetch('/api/analytics/track', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(analyticsData)
+    // });
 
-  const industryFeatures = roleFeatures[industry as keyof typeof roleFeatures];
-  return industryFeatures?.[userRole as keyof typeof industryFeatures] || ['Core Features', 'Analytics', 'Automation'];
-}
-
-function getSocialProof(industry: string) {
-  const socialProof = {
-    healthcare: {
-      title: 'Trusted by Leading Healthcare Institutions',
-      content: 'Join thousands of healthcare professionals from top hospitals and clinics worldwide.'
-    },
-    defense: {
-      title: 'Mission-Critical Defense Operations',
-      content: 'Trusted by defense agencies and military organizations for critical operations.'
-    },
-    finance: {
-      title: 'Financial Industry Leaders',
-      content: 'Used by major financial institutions for risk management and compliance.'
-    }
-  };
-
-  return socialProof[industry as keyof typeof socialProof] || socialProof.healthcare;
-}
-
-function determineUserPersona(userContext: UserContext) {
-  if (userContext.techSavviness === 'advanced' && userContext.engagementStyle === 'autonomous') {
-    return 'Power User';
-  } else if (userContext.techSavviness === 'beginner' && userContext.attentionSpan === 'short') {
-    return 'Quick Learner';
-  } else if (userContext.cognitiveLoad === 'high' && userContext.urgencyLevel === 'high') {
-    return 'Busy Professional';
-  } else {
-    return 'Standard User';
+    console.log('Welcome analytics tracked:', analyticsData);
+  } catch (error) {
+    console.error('Failed to track welcome analytics:', error);
   }
-}
-
-function getRecommendedFeatures(userRole: string, industry: string, userContext: UserContext) {
-  const baseFeatures = ['Dashboard', 'Analytics', 'Automation'];
-
-  if (userContext.techSavviness === 'advanced') {
-    baseFeatures.push('Advanced Configuration', 'API Access', 'Custom Workflows');
-  }
-
-  if (userContext.deviceType === 'mobile') {
-    baseFeatures.push('Mobile Optimization', 'Offline Access');
-  }
-
-  return baseFeatures;
-}
-
-function determineEngagementStrategy(userContext: UserContext) {
-  if (userContext.attentionSpan === 'short') {
-    return 'Quick wins and immediate value demonstration';
-  } else if (userContext.engagementStyle === 'exploratory') {
-    return 'Guided discovery with progressive disclosure';
-  } else {
-    return 'Comprehensive onboarding with feature highlights';
-  }
-}
-
-function getConversionOptimization(userContext: UserContext) {
-  const optimizations = ['Personalized messaging', 'Contextual timing'];
-
-  if (userContext.urgencyLevel === 'high') {
-    optimizations.push('Quick setup', 'Immediate value');
-  }
-
-  if (userContext.cognitiveLoad === 'low') {
-    optimizations.push('Feature exploration', 'Advanced capabilities');
-  }
-
-  return optimizations;
-}
-
-function calculatePersonalizationScore(userContext: UserContext) {
-  let score = 50; // Base score
-
-  // Add points for available context
-  if (userContext.professionalRole) score += 10;
-  if (userContext.industryFocus) score += 10;
-  if (userContext.deviceType) score += 5;
-  if (userContext.timeOfDay) score += 5;
-  if (userContext.techSavviness) score += 10;
-  if (userContext.engagementStyle) score += 10;
-
-  return Math.min(100, score);
 }

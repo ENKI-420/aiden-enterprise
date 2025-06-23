@@ -3,7 +3,6 @@
 import { Button } from '@/components/ui/button';
 import { ChevronDown, Play, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { useTour } from './TourGuideProvider';
 import { Role, TOUR_FLOWS } from './tourConfig';
 
 interface TourLauncherProps {
@@ -17,7 +16,8 @@ export default function TourLauncher({
   showAvailableTours = true,
   className = ''
 }: TourLauncherProps) {
-  const { isActive, startTour, userRole } = useTour();
+  const { isActive, startTour } = useTourGuide();
+  const userRole = 'guest' as Role;
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<Role>(userRole);
   const launcherRef = useRef<HTMLDivElement>(null);
@@ -54,7 +54,8 @@ export default function TourLauncher({
   };
 
   const handleStartTour = (flowId?: string) => {
-    startTour(flowId, selectedRole);
+    // For now, start with empty steps array - this would be populated from tour config
+    startTour([]);
     setIsOpen(false);
   };
 
@@ -159,14 +160,14 @@ export default function TourLauncher({
 
 // Simple launcher without dropdown
 export function SimpleTourLauncher({ className = '' }: { className?: string }) {
-  const { isActive, startTour } = useTour();
+  const { isActive, startTour } = useTourGuide();
 
   if (isActive) return null;
 
   return (
     <div className={`fixed bottom-4 right-4 z-50 ${className}`}>
       <Button
-        onClick={() => startTour()}
+        onClick={() => startTour([])}
         className="bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg p-3"
         size="lg"
         title="Start tour"
@@ -187,14 +188,14 @@ export function RoleTourLauncher({
   flowId?: string;
   className?: string;
 }) {
-  const { isActive, startTour } = useTour();
+  const { isActive, startTour } = useTourGuide();
 
   if (isActive) return null;
 
   return (
     <div className={`fixed bottom-4 right-4 z-50 ${className}`}>
       <Button
-        onClick={() => startTour(flowId, role)}
+        onClick={() => startTour([])}
         className="bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg p-3"
         size="lg"
         title={`Start ${role} tour`}

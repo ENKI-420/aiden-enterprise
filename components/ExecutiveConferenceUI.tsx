@@ -1,4 +1,315 @@
-        {/* Enhanced Controls with contextual help */}
+/* eslint-disable no-undef, @typescript-eslint/no-explicit-any */
+"use client";
+
+import AgentWorkflowButton from "@/components/AgentWorkflowButton";
+import LiveKitConference from "@/components/LiveKitConference";
+import MedicalAgentPanel from "@/components/MedicalAgentPanel";
+import PatientContextBar from "@/components/PatientContextBar";
+import PersonalizedWelcomeSystem from "@/components/PersonalizedWelcomeSystem";
+import { Button } from "@/components/ui/button";
+import { exportPDF } from "@/lib/exportPdf";
+import { useEffect, useRef, useState } from 'react';
+import useSWR from 'swr';
+import * as THREE from 'three';
+
+const LAYOUTS = [
+  { key: 'gallery', label: 'Gallery View' },
+  { key: 'speaker', label: 'Speaker View' },
+  { key: 'content', label: 'Content View' },
+];
+
+export default function ExecutiveConferenceUI() {
+  const [arEnabled, setArEnabled] = useState(false);
+  const arRef = useRef<HTMLDivElement>(null);
+  const [translated, setTranslated] = useState('');
+  const [qaInput, setQaInput] = useState('');
+  const [qaAnswer, setQaAnswer] = useState('');
+  const [showPersonalizedWelcome, setShowPersonalizedWelcome] = useState(false);
+  const [welcomeCompleted, setWelcomeCompleted] = useState(false);
+  const [theme, setTheme] = useState('dark');
+  const [layout, setLayout] = useState('gallery');
+  const [videoEnabled, setVideoEnabled] = useState(false);
+  const [screenEnabled, setScreenEnabled] = useState(false);
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const screenVideoRef = useRef<HTMLVideoElement>(null);
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [screenStream, setScreenStream] = useState<MediaStream | null>(null);
+  const mockRemoteVideoRef = useRef<HTMLVideoElement>(null);
+
+  // LiveKit connection & token handling
+  const [shouldJoin, setShouldJoin] = useState(false);
+  const fetcher = (url: string) => fetch(url).then(res => res.json());
+  const { data: lk } = useSWR(
+    shouldJoin ? `/api/livekit-token?identity=DemoUser&room=osborn-demo` : null,
+    fetcher
+  );
+  const token = lk?.token ?? '';
+  const isConnected = Boolean(token);
+  const connect = () => setShouldJoin(true);
+
+  // Mock remote participant list to keep UI functional
+  const remoteParticipants = [
+    { id: 1, name: "Alice", isSpeaking: true },
+    { id: 2, name: "Bob", isSpeaking: false },
+    { id: 3, name: "Carol", isSpeaking: false },
+    { id: 4, name: "David", isSpeaking: false },
+  ];
+
+  // Live transcript captured from the local microphone (fallback to empty string).
+  const [transcript, setTranscript] = useState('');
+  const [patientContext, setPatientContext] = useState<any>(null);
+
+  // Automatically join once the page loads (useful for demos / automation)
+  useEffect(() => {
+    setShouldJoin(true);
+  }, []);
+
+    // Initialize personalized welcome system
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem('personalizedWelcomeCompleted');
+    const isFirstVisit = !localStorage.getItem('visitCount');
+
+    // Show personalized welcome for first-time users or returning users with new features
+    if (isFirstVisit || (!hasSeenWelcome || (hasSeenWelcome && shouldShowEnhancedWelcome()))) {
+      setTimeout(() => {
+        setShowPersonalizedWelcome(true);
+      }, 2000); // Delay to allow page to settle
+    }
+  }, []);
+
+  const shouldShowEnhancedWelcome = (): boolean => {
+    const lastWelcome = localStorage.getItem('lastWelcomeDate');
+    const now = new Date();
+    const lastDate = lastWelcome ? new Date(lastWelcome) : null;
+
+    // Show enhanced welcome if it's been more than 7 days
+    return !lastDate || (now.getTime() - lastDate.getTime()) > (7 * 24 * 60 * 60 * 1000);
+  };
+
+  const handleWelcomeComplete = (insights: any) => {
+    setShowPersonalizedWelcome(false);
+    setWelcomeCompleted(true);
+
+    // Store completion data for future personalization
+    localStorage.setItem('personalizedWelcomeCompleted', 'true');
+    localStorage.setItem('lastWelcomeDate', new Date().toISOString());
+    localStorage.setItem('welcomeInsights', JSON.stringify(insights));
+
+    console.log('Welcome completed with insights:', insights);
+
+    // Apply any preference updates from the welcome flow
+    if (insights.voiceEnabled) {
+      // Voice was enabled during welcome
+      console.log('Voice features enabled');
+    }
+  };
+
+  const handleWelcomeDismiss = () => {
+    setShowPersonalizedWelcome(false);
+
+    // Mark as seen but not completed
+    localStorage.setItem('welcomeDismissed', new Date().toISOString());
+  };
+
+  // Speech-to-text pipeline (Web Speech API as a stand-in for server STT)
+  useEffect(() => {
+    if (typeof window === 'undefined' || !isConnected) return;
+
+    // Prefer native SpeechRecognition where available.
+    const SpeechRecognition: any =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event: any) => {
+      let finalTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; i += 1) {
+        const result = event.results[i];
+        if (result.isFinal) {
+          finalTranscript += result[0].transcript;
+        }
+      }
+      if (finalTranscript) {
+        setTranscript((prev) => `${prev} ${finalTranscript}`.trim());
+      }
+    };
+
+    recognition.start();
+    return () => {
+      recognition.stop();
+    };
+  }, [isConnected]);
+
+  useEffect(() => {
+    if (!arEnabled || !arRef.current) return;
+    // Basic Three.js scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(400, 300);
+    arRef.current.appendChild(renderer.domElement);
+    camera.position.z = 5;
+    // Example: Add a cube as a marker
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+    function animate() {
+      requestAnimationFrame(animate);
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+    return () => {
+      renderer.dispose();
+      if (arRef.current) arRef.current.innerHTML = '';
+    };
+  }, [arEnabled]);
+
+  // Theme switcher
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    document.documentElement.classList.toggle('light', theme === 'light');
+  }, [theme]);
+
+  const handleTranslate = async () => {
+    // Placeholder: Replace with real Google Translate API call
+    const response = await fetch('/api/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: transcript, target: 'es' }),
+    });
+    const data = await response.json();
+    setTranslated(data.translated || 'Translation unavailable');
+  };
+
+  const handleQa = async () => {
+    const response = await fetch('/api/copilot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input: `Transcript: ${transcript}\nQuestion: ${qaInput}` }),
+    });
+    const data = await response.json();
+    setQaAnswer(data.summary || 'No answer returned.');
+  };
+
+  // Start/stop local video
+  const handleStartVideo = async () => {
+    if (!videoEnabled) {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      setLocalStream(stream);
+      setVideoEnabled(true);
+    } else {
+      localStream?.getTracks().forEach(track => track.stop());
+      setLocalStream(null);
+      setVideoEnabled(false);
+    }
+  };
+
+  // Start/stop screen share
+  const handleShareScreen = async () => {
+    if (!screenEnabled) {
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      setScreenStream(stream);
+      setScreenEnabled(true);
+      stream.getVideoTracks()[0].onended = () => {
+        setScreenStream(null);
+        setScreenEnabled(false);
+      };
+    } else {
+      screenStream?.getTracks().forEach(track => track.stop());
+      setScreenStream(null);
+      setScreenEnabled(false);
+    }
+  };
+
+  useEffect(() => {
+    if (localVideoRef.current && localStream) {
+      localVideoRef.current.srcObject = localStream;
+    }
+  }, [localStream]);
+  useEffect(() => {
+    if (screenVideoRef.current && screenStream) {
+      screenVideoRef.current.srcObject = screenStream;
+    }
+  }, [screenStream]);
+
+  useEffect(() => {
+    // TODO: Replace with real remote stream from WebRTC signaling
+    if (mockRemoteVideoRef.current) {
+      // For demo, use a sample video or leave blank
+      // mockRemoteVideoRef.current.srcObject = remoteStream;
+    }
+  }, []);
+
+  // Placeholder shared content element (used in content layout)
+  const sharedContent = (
+    <div className="w-full h-64 bg-gray-800 flex items-center justify-center text-white text-xl rounded-xl">
+      Shared Content (Screen Share or Doc)
+    </div>
+  );
+
+  // Get patient ID from URL params
+  const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const patientId = urlParams?.get('patient');
+  const mrn = urlParams?.get('mrn');
+
+  // Determine user role from context (this could be from auth or props)
+  const userRole = patientContext ? 'physician' : 'healthcare_professional';
+
+  return (
+    <div className={theme === 'dark' ? 'bg-gray-950 text-white min-h-screen' : 'bg-white text-gray-900 min-h-screen'}>
+
+      {/* Personalized Welcome System */}
+      {showPersonalizedWelcome && (
+        <PersonalizedWelcomeSystem
+          onComplete={handleWelcomeComplete}
+          onDismiss={handleWelcomeDismiss}
+          patientContext={patientContext}
+          userRole={userRole}
+        />
+      )}
+
+      {/* Theme Switcher */}
+      <div className="fixed top-4 right-4 z-40">
+        <button
+          aria-label="Switch theme"
+          className="px-3 py-2 rounded bg-gray-800 text-white font-bold shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        >
+          {theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
+        </button>
+      </div>
+
+      {/* Patient Context Bar - at the top */}
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-full max-w-2xl px-4">
+        <PatientContextBar
+          patientId={patientId || undefined}
+          mrn={mrn || undefined}
+          onPatientLoad={setPatientContext}
+        />
+      </div>
+
+      {/* Layout Switcher */}
+      <div className="fixed top-20 left-4 z-40">
+        {LAYOUTS.map(l => (
+          <button
+            key={l.key}
+            onClick={() => setLayout(l.key)}
+            className={`px-4 py-2 rounded ${layout === l.key ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-200'} font-semibold`}
+            aria-label={l.label}
+            tabIndex={0}
+          >
+            {l.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Enhanced Controls with contextual help */}
       <div className="flex gap-4 mb-4 flex-wrap">
         <div className="relative group">
           <Button onClick={() => setArEnabled(v => !v)} aria-label="Toggle AR overlay" tabIndex={0} data-tour="ar-overlay">
@@ -96,3 +407,110 @@
           </div>
         )}
       </div>
+
+      {/* AR Overlay */}
+      {arEnabled && <div ref={arRef} style={{ position: 'absolute', top: 0, left: 0, width: 400, height: 300, pointerEvents: 'none', zIndex: 10 }} />}
+      {translated && <div className="mt-2 text-blue-400">{translated}</div>}
+
+      {/* Medical AI Agent Panel - positioned on the right side */}
+      <div className="fixed right-4 top-20 z-30">
+        <MedicalAgentPanel transcript={transcript} patientContext={patientContext} />
+      </div>
+
+      <div className="mt-4 p-4 bg-gray-900 rounded-xl">
+        <div className="font-bold mb-2">AI Q&amp;A</div>
+        <input
+          value={qaInput}
+          onChange={e => setQaInput(e.target.value)}
+          placeholder={welcomeCompleted ? "Ask anything about this session, patient data, or clinical insights..." : "Ask a question about this meeting..."}
+          className="px-2 py-1 rounded bg-gray-800 text-white w-2/3"
+        />
+        <Button onClick={handleQa} className="ml-2">Ask</Button>
+        {qaAnswer && <div className="mt-2 text-green-400">{qaAnswer}</div>}
+      </div>
+
+      {/* Layout-specific content */}
+      {layout === 'gallery' && isConnected && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          {/* Local self-view */}
+          <div className={`bg-gray-900 rounded-xl p-4 flex flex-col items-center shadow-lg border-2 border-blue-400`}>
+            <div className="w-20 h-20 bg-gray-700 rounded-full mb-2 flex items-center justify-center text-2xl font-bold text-white overflow-hidden">
+              {videoEnabled ? <video ref={localVideoRef} autoPlay muted playsInline className="w-20 h-20 object-cover rounded-full" /> : 'A'}
+            </div>
+            <div className="text-white font-semibold">You</div>
+            {videoEnabled && <div className="text-xs text-blue-400 mt-1">Camera On</div>}
+          </div>
+          {/* Remote participants (mock until LiveKit is integrated) */}
+          {remoteParticipants.map((p) => (
+            <div
+              key={p.id}
+              className="bg-gray-900 rounded-xl p-4 flex flex-col items-center shadow-lg border-2 border-gray-800"
+            >
+              <div className="w-20 h-20 bg-gray-700 rounded-full mb-2 flex items-center justify-center text-2xl font-bold text-white">
+                {p.name.charAt(0)}
+              </div>
+              <div className="text-white font-semibold">{p.name}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      {layout === 'speaker' && (
+        <div className="flex gap-4 mb-6">
+          <div className="flex-1 bg-gray-900 rounded-xl p-6 flex flex-col items-center shadow-lg border-2 border-blue-400">
+            <div className="w-32 h-32 bg-gray-700 rounded-full mb-4 flex items-center justify-center text-5xl font-bold text-white overflow-hidden">
+              {videoEnabled ? <video ref={localVideoRef} autoPlay muted playsInline className="w-32 h-32 object-cover rounded-full" /> : 'A'}
+            </div>
+            <div className="text-white font-semibold text-xl mb-2">You</div>
+            {videoEnabled && <div className="text-xs text-blue-400">Camera On</div>}
+          </div>
+          <div className="flex flex-col gap-2">
+            {remoteParticipants.slice(1).map((p, i) => (
+              <div key={p.id} className="bg-gray-800 rounded-xl p-2 flex items-center gap-2 w-32">
+                <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-lg font-bold text-white overflow-hidden">
+                  {/* TODO: Replace with remote video stream */}
+                  <video ref={i === 0 ? mockRemoteVideoRef : undefined} autoPlay playsInline muted className="w-8 h-8 object-cover rounded-full bg-gray-800" />
+                </div>
+                <div className="text-white text-sm">{p.name}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {layout === 'content' && (
+        <div className="flex gap-4 mb-6">
+          <div className="flex-1">
+            {screenEnabled ? (
+              <video ref={screenVideoRef} autoPlay playsInline className="w-full h-64 object-contain rounded-xl bg-black" />
+            ) : (
+              sharedContent
+            )}
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="bg-gray-900 rounded-xl p-2 flex items-center gap-2 w-32">
+              <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-lg font-bold text-white overflow-hidden">
+                {videoEnabled ? <video ref={localVideoRef} autoPlay muted playsInline className="w-8 h-8 object-cover rounded-full" /> : 'A'}
+              </div>
+              <div className="text-white text-sm">You</div>
+            </div>
+            {remoteParticipants.slice(1).map((p, i) => (
+              <div key={p.id} className="bg-gray-800 rounded-xl p-2 flex items-center gap-2 w-32">
+                <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-lg font-bold text-white overflow-hidden">
+                  {/* TODO: Replace with remote video stream */}
+                  <video ref={i === 0 ? mockRemoteVideoRef : undefined} autoPlay playsInline muted className="w-8 h-8 object-cover rounded-full bg-gray-800" />
+                </div>
+                <div className="text-white text-sm">{p.name}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Mount LiveKit in the background once the user connects */}
+      {token && (
+        <div className="hidden">
+          <LiveKitConference token={token} />
+        </div>
+      )}
+    </div>
+  );
+}

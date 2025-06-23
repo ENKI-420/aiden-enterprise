@@ -2,7 +2,7 @@
 
 import { UserRole } from '@/lib/tourConfig';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTourActions } from './TourProvider';
 
 interface TourTriggerProps {
@@ -102,6 +102,10 @@ export default function TourTrigger({
   const renderProgress = () => {
     if (!showProgress) return null;
 
+    // eslint-disable-next-line no-undef
+    if (typeof window === 'undefined') return null;
+
+    // eslint-disable-next-line no-undef
     const progress = localStorage.getItem('tourProgress');
     const completed = progress ? Object.keys(JSON.parse(progress)).length : 0;
     const total = 5; // Approximate total steps
@@ -168,12 +172,16 @@ export function FloatingTourTrigger() {
   const [hasShown, setHasShown] = useState(false);
 
   // Check if this is the first visit
-  if (typeof window !== 'undefined') {
-    const visitCount = parseInt(localStorage.getItem('visitCount') || '0');
-    if (visitCount === 0 && !hasShown) {
-      setHasShown(true);
+  useEffect(() => {
+    // eslint-disable-next-line no-undef
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      const visitCount = parseInt(localStorage.getItem('visitCount') || '0');
+      if (visitCount === 0 && !hasShown) {
+        setHasShown(true);
+      }
     }
-  }
+  }, [hasShown]);
 
   if (hasShown) return null;
 

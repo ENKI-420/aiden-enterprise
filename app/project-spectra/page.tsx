@@ -194,21 +194,21 @@ const InfoOverlay = ({ chapter }: { chapter: typeof projectSpectraChapters[0] })
 
         <div className="border-t border-primary/20 pt-4">
           <h3 className="text-lg font-semibold text-primary-300 mb-2 flex items-center gap-2">
+            <span className="text-primary-400">📍</span>
+            Location Context
+          </h3>
+          <p className="text-slate-300 leading-relaxed">
+            {chapter.location}
+          </p>
+        </div>
+
+        <div className="border-t border-primary/20 pt-4">
+          <h3 className="text-lg font-semibold text-primary-300 mb-2 flex items-center gap-2">
             <span className="text-primary-400">?</span>
             Research Hypothesis
           </h3>
           <p className="text-slate-300 leading-relaxed italic">
             {chapter.hypothesis}
-          </p>
-        </div>
-
-        <div className="border-t border-primary/20 pt-4">
-          <h3 className="text-lg font-semibold text-secondary-300 mb-2 flex items-center gap-2">
-            <span className="text-secondary-400">🔬</span>
-            Scientific Evidence
-          </h3>
-          <p className="text-slate-300 leading-relaxed">
-            {chapter.evidence}
           </p>
         </div>
       </div>
@@ -218,10 +218,28 @@ const InfoOverlay = ({ chapter }: { chapter: typeof projectSpectraChapters[0] })
 
 // Particle Background Component
 const ParticleBackground = () => {
-  return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />
+  const [windowDimensions, setWindowDimensions] = useState({ width: 1200, height: 800 });
 
+  useEffect(() => {
+     
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      setWindowDimensions({ width: window.innerWidth, height: window.innerHeight });
+
+      const handleResize = () => {
+        // eslint-disable-next-line no-undef
+        setWindowDimensions({ width: window.innerWidth, height: window.innerHeight });
+      };
+
+      // eslint-disable-next-line no-undef
+      window.addEventListener('resize', handleResize);
+      // eslint-disable-next-line no-undef
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none">
       {/* Animated particles */}
       <div className="absolute inset-0">
         {Array.from({ length: 50 }).map((_, i) => (
@@ -229,8 +247,8 @@ const ParticleBackground = () => {
             key={i}
             className="absolute w-1 h-1 bg-primary/30 rounded-full"
             animate={{
-              x: [0, Math.random() * window.innerWidth],
-              y: [0, Math.random() * window.innerHeight],
+              x: [0, Math.random() * windowDimensions.width],
+              y: [0, Math.random() * windowDimensions.height],
               opacity: [0, 1, 0],
             }}
             transition={{
@@ -281,21 +299,25 @@ export default function ProjectSpectraDocumentary() {
   const [currentChapter, setCurrentChapter] = useState(0);
   const [videoTime, setVideoTime] = useState(0);
   const [showWelcome, setShowWelcome] = useState(false);
-  const [welcomeCompleted, setWelcomeCompleted] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
 
   // Check if welcome has been completed
   useEffect(() => {
-    const hasCompleted = localStorage.getItem('simpleWelcomeCompleted');
-    if (!hasCompleted) {
-      setShowWelcome(true);
-    } else {
-      setWelcomeCompleted(true);
+     
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      const hasCompleted = localStorage.getItem('simpleWelcomeCompleted');
+      if (!hasCompleted) {
+        setShowWelcome(true);
+      }
     }
   }, []);
 
   // Keyboard navigation
   useEffect(() => {
+     
+    if (typeof window === 'undefined') return;
+
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
@@ -313,10 +335,14 @@ export default function ProjectSpectraDocumentary() {
         case ' ':
           e.preventDefault();
           // Toggle video play/pause
-          const video = document.querySelector('video');
-          if (video) {
-            if (video.paused) video.play();
-            else video.pause();
+           
+          if (typeof document !== 'undefined') {
+            // eslint-disable-next-line no-undef
+            const video = document.querySelector('video');
+            if (video) {
+              if (video.paused) video.play();
+              else video.pause();
+            }
           }
           break;
         case 'a':
@@ -327,18 +353,19 @@ export default function ProjectSpectraDocumentary() {
       }
     };
 
+    // eslint-disable-next-line no-undef
     window.addEventListener('keydown', handleKeyPress);
+    // eslint-disable-next-line no-undef
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, []);
 
   const handleWelcomeComplete = () => {
     setShowWelcome(false);
-    setWelcomeCompleted(true);
-  };
-
-  const handleWelcomeDismiss = () => {
-    setShowWelcome(false);
-    setWelcomeCompleted(true);
+     
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      localStorage.setItem('simpleWelcomeCompleted', 'true');
+    }
   };
 
   const currentChapterData = projectSpectraChapters[currentChapter];
@@ -412,7 +439,7 @@ export default function ProjectSpectraDocumentary() {
                 {/* Video Player */}
                 <div className="lg:col-span-2">
                   <VideoPlayer
-                    src={currentChapterData.videoUrl}
+                    src={currentChapterData.video}
                     title={currentChapterData.title}
                     onTimeUpdate={setVideoTime}
                     currentTime={videoTime}

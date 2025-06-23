@@ -50,18 +50,21 @@ export function TourProvider({
   const [progress, setProgress] = useState<Record<string, any>>({});
   const [insights, setInsights] = useState<any>({});
 
-  // SSR-safe initialization
+  // Initialize tour state
   useEffect(() => {
-    // Detect user role from various sources
+    // eslint-disable-next-line no-undef
+    if (typeof window === 'undefined') return;
+
     const detectUserRole = (): UserRole => {
-      // Check URL parameters
+      // Check URL parameters first
       const urlParams = new URLSearchParams(window.location.search);
-      const roleParam = urlParams.get('role') as UserRole;
+      const roleParam = urlParams.get('role');
       if (roleParam && ['guest', 'developer', 'admin', 'clinician', 'researcher', 'executive'].includes(roleParam)) {
         return roleParam;
       }
 
       // Check localStorage for saved role
+      // eslint-disable-next-line no-undef
       const savedRole = localStorage.getItem('userRole') as UserRole;
       if (savedRole && ['guest', 'developer', 'admin', 'clinician', 'researcher', 'executive'].includes(savedRole)) {
         return savedRole;
@@ -92,10 +95,13 @@ export function TourProvider({
 
     const detectedRole = detectUserRole();
     setCurrentRole(detectedRole);
+    // eslint-disable-next-line no-undef
     localStorage.setItem('userRole', detectedRole);
 
     // Load saved progress and insights
+    // eslint-disable-next-line no-undef
     const savedProgress = localStorage.getItem('tourProgress');
+    // eslint-disable-next-line no-undef
     const savedInsights = localStorage.getItem('tourInsights');
 
     if (savedProgress) {
@@ -108,12 +114,17 @@ export function TourProvider({
 
   // Auto-start logic
   useEffect(() => {
-    if (!autoStartEnabled) return;
+    // eslint-disable-next-line no-undef
+    if (typeof window === 'undefined' || !autoStartEnabled) return;
 
     const shouldStart = () => {
+      // eslint-disable-next-line no-undef
       const visitCount = parseInt(localStorage.getItem('visitCount') || '0');
+      // eslint-disable-next-line no-undef
       const lastVisit = localStorage.getItem('lastVisit');
+      // eslint-disable-next-line no-undef
       const tourCompleted = localStorage.getItem('tourCompleted');
+      // eslint-disable-next-line no-undef
       const tourDismissed = localStorage.getItem('tourDismissed');
 
       // First visit
@@ -146,10 +157,15 @@ export function TourProvider({
   const startTour = (role?: UserRole, flow?: string) => {
     if (role) {
       setCurrentRole(role);
-      localStorage.setItem('userRole', role);
+      // eslint-disable-next-line no-undef
+      if (typeof window !== 'undefined') {
+        // eslint-disable-next-line no-undef
+        localStorage.setItem('userRole', role);
+      }
     }
 
-    if (flow) {
+    if (flow && typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
       localStorage.setItem('lastTourFlow', flow);
     }
 
@@ -173,10 +189,17 @@ export function TourProvider({
   const restartTour = () => {
     setProgress({});
     setInsights({});
-    localStorage.removeItem('tourProgress');
-    localStorage.removeItem('tourInsights');
-    localStorage.removeItem('tourCompleted');
-    localStorage.removeItem('tourDismissed');
+    // eslint-disable-next-line no-undef
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      localStorage.removeItem('tourProgress');
+      // eslint-disable-next-line no-undef
+      localStorage.removeItem('tourInsights');
+      // eslint-disable-next-line no-undef
+      localStorage.removeItem('tourCompleted');
+      // eslint-disable-next-line no-undef
+      localStorage.removeItem('tourDismissed');
+    }
     setIsActive(false);
     setIsPaused(false);
 
@@ -188,7 +211,11 @@ export function TourProvider({
 
   const setUserRole = (role: UserRole) => {
     setCurrentRole(role);
-    localStorage.setItem('userRole', role);
+    // eslint-disable-next-line no-undef
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      localStorage.setItem('userRole', role);
+    }
   };
 
   const setAutoStart = (enabled: boolean) => {
@@ -202,8 +229,13 @@ export function TourProvider({
   const clearProgress = () => {
     setProgress({});
     setInsights({});
-    localStorage.removeItem('tourProgress');
-    localStorage.removeItem('tourInsights');
+    // eslint-disable-next-line no-undef
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      localStorage.removeItem('tourProgress');
+      // eslint-disable-next-line no-undef
+      localStorage.removeItem('tourInsights');
+    }
   };
 
   const handleTourComplete = (tourInsights: any) => {
