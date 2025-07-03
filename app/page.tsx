@@ -1,14 +1,5 @@
 "use client";
 
-import EnhancedWelcomeSystem from "@/components/EnhancedWelcomeSystem";
-import Footer from '@/components/Footer';
-import Header from '@/components/Header';
-import HealthLinkInvestorPitch from "@/components/HealthLinkInvestorPitch";
-import ParticleBackground from "@/components/ParticleBackground";
-import TourGuideProvider from "@/components/TourGuideProvider";
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -23,6 +14,15 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import EnhancedWelcomeSystem from "../components/EnhancedWelcomeSystem";
+import Footer from '../components/Footer';
+import Header from '../components/Header';
+import HealthLinkInvestorPitch from "../components/HealthLinkInvestorPitch";
+import ParticleBackground from "../components/ParticleBackground";
+import TourGuideProvider from "../components/TourGuideProvider";
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader } from '../components/ui/card';
 
 const INDUSTRY_COPY: Record<string, { title: string; tagline: string; points: string[] }> = {
   healthcare: {

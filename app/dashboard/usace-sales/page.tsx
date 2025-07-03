@@ -1,9 +1,5 @@
 "use client";
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import {
     Calendar,
     Clock,
@@ -15,6 +11,10 @@ import {
     Users
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Badge } from '../../../components/ui/badge';
+import { Button } from '../../../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Progress } from '../../../components/ui/progress';
 
 interface USACETrialRequest {
     company: string;
