@@ -26,6 +26,13 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Environment files with secrets
+.env
+.env.local
+.env.production
+.env.development
+env.local
+
 /net-commander
 
 .vercel
