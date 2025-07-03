@@ -1,12 +1,20 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
-    Bot, Brain, Zap, Shield, Eye, Mic, MicOff,
-    Send, FileText, Monitor, Code, Activity,
-    Settings, Camera, Cpu, HardDrive, Wifi
+    Activity,
+    Bot, Brain,
+    Code,
+    Cpu, HardDrive,
+    Mic, MicOff,
+    Monitor,
+    Send,
+    Settings,
+    Shield,
+    Wifi,
+    Zap
 } from 'lucide-react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Message {
     id: string;
@@ -260,10 +268,10 @@ export default function QuantumAIAssistant() {
                             {modes.map((mode) => (
                                 <button
                                     key={mode.id}
-                                    onClick={() => setCurrentMode(mode.id as any)}
+                                    onClick={() => setCurrentMode(mode.id as 'chat' | 'analysis' | 'security' | 'code')}
                                     className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all ${currentMode === mode.id
-                                            ? 'bg-blue-600/20 border border-blue-500/50 text-blue-400'
-                                            : 'bg-slate-700/30 border border-slate-600/50 text-slate-400 hover:bg-slate-700/50'
+                                        ? 'bg-blue-600/20 border border-blue-500/50 text-blue-400'
+                                        : 'bg-slate-700/30 border border-slate-600/50 text-slate-400 hover:bg-slate-700/50'
                                         }`}
                                 >
                                     <span className={mode.color}>{mode.icon}</span>
@@ -329,8 +337,8 @@ export default function QuantumAIAssistant() {
                                 >
                                     <div className={`max-w-4xl ${message.role === 'user' ? 'ml-16' : 'mr-16'}`}>
                                         <div className={`p-6 rounded-2xl ${message.role === 'user'
-                                                ? 'bg-blue-600/10 border border-blue-500/20 text-blue-100'
-                                                : 'bg-slate-800/30 border border-slate-700/50 text-slate-100'
+                                            ? 'bg-blue-600/10 border border-blue-500/20 text-blue-100'
+                                            : 'bg-slate-800/30 border border-slate-700/50 text-slate-100'
                                             }`}>
                                             <div className="flex items-start gap-4">
                                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${message.role === 'user' ? 'bg-blue-500' : 'bg-slate-700'
@@ -438,8 +446,8 @@ export default function QuantumAIAssistant() {
                                         type="button"
                                         onClick={toggleVoiceRecording}
                                         className={`p-3 rounded-xl transition-all ${isListening
-                                                ? 'bg-red-500/20 border border-red-500/50 text-red-400'
-                                                : 'bg-slate-700/50 border border-slate-600/50 text-slate-400 hover:bg-slate-700/70'
+                                            ? 'bg-red-500/20 border border-red-500/50 text-red-400'
+                                            : 'bg-slate-700/50 border border-slate-600/50 text-slate-400 hover:bg-slate-700/70'
                                             }`}
                                     >
                                         {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
@@ -454,9 +462,9 @@ export default function QuantumAIAssistant() {
                                 </button>
                             </div>
                         </form>
+                    </motion.div>
                 </div>
             </div>
         </div>
-    </div >
-  );
+    );
 } 
