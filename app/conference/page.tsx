@@ -1,28 +1,28 @@
 'use client'
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { motion } from 'framer-motion'
 import {
-    AlertTriangleIcon,
-    BotIcon,
-    Brain,
-    EyeIcon,
-    FileDown,
-    ListChecksIcon,
-    MicIcon,
-    PhoneOff,
-    ScreenShareIcon,
-    Settings,
-    Shield,
-    SparklesIcon,
-    TextQuoteIcon,
-    Users,
-    VideoIcon,
-    Zap
+  AlertTriangleIcon,
+  BotIcon,
+  Brain,
+  EyeIcon,
+  FileDown,
+  ListChecksIcon,
+  MicIcon,
+  PhoneOff,
+  ScreenShareIcon,
+  Settings,
+  Shield,
+  SparklesIcon,
+  TextQuoteIcon,
+  Users,
+  VideoIcon,
+  Zap
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { Badge } from '../../components/ui/badge'
+import { Button } from '../../components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 
 interface Agent {
   name: string
@@ -455,8 +455,8 @@ export default function ExecutiveConference() {
                       variant="outline"
                       className={
                         agent.status === 'active' ? 'border-green-402 text-green-400' :
-                        agent.status === 'processing' ? 'border-yellow-402 text-yellow-400' :
-                        'border-slate-602 text-slate-400'
+                          agent.status === 'processing' ? 'border-yellow-402 text-yellow-400' :
+                            'border-slate-602 text-slate-400'
                       }
                     >
                       {agent.status}

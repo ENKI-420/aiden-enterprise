@@ -1,20 +1,20 @@
-import Footer from '@/components/Footer'
-import Header from '@/components/Header'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
-    Award,
-    Building2,
-    Calendar,
-    CheckCircle,
-    ExternalLink,
-    Mail,
-    Shield,
-    Users
+  Award,
+  Building2,
+  Calendar,
+  CheckCircle,
+  ExternalLink,
+  Mail,
+  Shield,
+  Users
 } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
+import Footer from '../../components/Footer'
+import Header from '../../components/Header'
+import { Badge } from '../../components/ui/badge'
+import { Button } from '../../components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 
 export default function About() {
   return (
@@ -377,8 +377,8 @@ function CertificationCard({ icon, title, description, status }: {
           variant="outline"
           className={
             status === 'Certified' ? 'border-green-400 text-green-400' :
-            status === 'Compliant' ? 'border-blue-400 text-blue-400' :
-            'border-yellow-400 text-yellow-400'
+              status === 'Compliant' ? 'border-blue-400 text-blue-400' :
+                'border-yellow-400 text-yellow-400'
           }
         >
           {status}
