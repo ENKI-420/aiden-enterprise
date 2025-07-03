@@ -24,6 +24,8 @@ GitHub Push Protection is blocking deployment due to API keys in commit history 
    - [Anthropic API Key #2](https://github.com/ENKI-420/aiden-enterprise/security/secret-scanning/unblock-secret/2zMshXw4SvfQI39NS4ISGKk7vIx)
    - [OpenAI API Key](https://github.com/ENKI-420/aiden-enterprise/security/secret-scanning/unblock-secret/2zMshSMNhy2ucAnH3YfThjuDXkx)
    - [GitHub Personal Access Token](https://github.com/ENKI-420/aiden-enterprise/security/secret-scanning/unblock-secret/2zMshVuaQGEHxbD8QEGcm1MGD0B)
+   - [Google OAuth Client ID](https://github.com/ENKI-420/aiden-enterprise/security/secret-scanning/unblock-secret/2zN16ztmfijNFlD6DY3pNiw7Qd4)
+   - [Google OAuth Client Secret](https://github.com/ENKI-420/aiden-enterprise/security/secret-scanning/unblock-secret/2zN16zM0RwD41tcxAa5akOE93uC)
 
 2. **Push to Production**:
    ```bash
