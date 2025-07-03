@@ -249,11 +249,11 @@
 
 /* Gradient Text Utilities */
 .gradient-text-primary {
-  @apply bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent;
 }
 
 .gradient-text-ai {
-  @apply bg-gradient-to-r from-purple-400 via-indigo-400 to-purple-600 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-600 bg-clip-text text-transparent;
 }
 
 .gradient-text-healthcare {
@@ -296,7 +296,7 @@
 }
 
 .border-gradient-ai {
-  border-image: linear-gradient(45deg, #8b5cf6, #6366f1) 1;
+  border-image: linear-gradient(45deg, #1e40af, #2563eb) 1;
 }
 
 .border-gradient-healthcare {
@@ -460,7 +460,7 @@
 }
 
 .spinner-enhanced.ai {
-  @apply border-t-purple-500;
+  @apply border-t-blue-500;
 }
 
 .spinner-enhanced.healthcare {
@@ -471,23 +471,23 @@
   @apply border-t-orange-500;
 }
 
-/* Quantum Theme Integration */
+/* Quantum Theme Integration - Professional Military/Health/Legal Colors */
 .quantum-app {
   --quantum-primary: #00FFFF;
   --quantum-secondary: #0EA5E9;
   --quantum-accent: #3B82F6;
   --quantum-plasma: #06B6D4;
-  --quantum-field: #8B5CF6;
+  --quantum-field: #1E40AF;
   --quantum-dimensional: #10B981;
   
   --gradient-quantum: linear-gradient(135deg, #00FFFF 0%, #0EA5E9 50%, #3B82F6 100%);
-  --gradient-neural: linear-gradient(45deg, #8B5CF6, #06B6D4, #00FFFF, #10B981);
+  --gradient-neural: linear-gradient(45deg, #1E40AF, #06B6D4, #00FFFF, #10B981);
   --gradient-plasma: linear-gradient(90deg, #00FFFF, #06B6D4, #0EA5E9);
   --gradient-dimensional: linear-gradient(180deg, #0F172A, #1E293B, #334155);
   
   --shadow-quantum: 0 0 20px rgba(0, 255, 255, 0.3);
   --shadow-glow: 0 0 40px rgba(14, 165, 233, 0.6);
-  --shadow-neural: 0 0 30px rgba(139, 92, 246, 0.4);
+  --shadow-neural: 0 0 30px rgba(30, 64, 175, 0.4);
 }
 
 /* Quantum Navigation Enhancements */

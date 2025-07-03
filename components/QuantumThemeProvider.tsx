@@ -4,150 +4,150 @@ import { ThemeProvider as NextThemeProvider } from 'next-themes';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface QuantumTheme {
-    name: string;
-    colors: {
-        quantum: {
-            primary: string;
-            secondary: string;
-            accent: string;
-            plasma: string;
-            field: string;
-            dimensional: string;
-        };
-        gradients: {
-            quantum: string;
-            neural: string;
-            plasma: string;
-            dimensional: string;
-        };
-        shadows: {
-            quantum: string;
-            glow: string;
-            neural: string;
-        };
+  name: string;
+  colors: {
+    quantum: {
+      primary: string;
+      secondary: string;
+      accent: string;
+      plasma: string;
+      field: string;
+      dimensional: string;
     };
-    animations: {
-        quantum: string;
-        plasma: string;
-        neural: string;
+    gradients: {
+      quantum: string;
+      neural: string;
+      plasma: string;
+      dimensional: string;
     };
+    shadows: {
+      quantum: string;
+      glow: string;
+      neural: string;
+    };
+  };
+  animations: {
+    quantum: string;
+    plasma: string;
+    neural: string;
+  };
 }
 
 const quantumThemes: Record<string, QuantumTheme> = {
-    'quantum-dark': {
-        name: 'Quantum Dark',
-        colors: {
-            quantum: {
-                primary: '#00FFFF',
-                secondary: '#0EA5E9',
-                accent: '#3B82F6',
-                plasma: '#06B6D4',
-                field: '#8B5CF6',
-                dimensional: '#10B981'
-            },
-            gradients: {
-                quantum: 'linear-gradient(135deg, #00FFFF 0%, #0EA5E9 50%, #3B82F6 100%)',
-                neural: 'linear-gradient(45deg, #8B5CF6, #06B6D4, #00FFFF, #10B981)',
-                plasma: 'linear-gradient(90deg, #00FFFF, #06B6D4, #0EA5E9)',
-                dimensional: 'linear-gradient(180deg, #0F172A, #1E293B, #334155)'
-            },
-            shadows: {
-                quantum: '0 0 20px rgba(0, 255, 255, 0.3)',
-                glow: '0 0 40px rgba(14, 165, 233, 0.6)',
-                neural: '0 0 30px rgba(139, 92, 246, 0.4)'
-            }
-        },
-        animations: {
-            quantum: 'quantumPulse 3s ease-in-out infinite',
-            plasma: 'plasmaFlow 4s linear infinite',
-            neural: 'neuralSync 2s ease-in-out infinite alternate'
-        }
+  'quantum-dark': {
+    name: 'Quantum Dark',
+    colors: {
+      quantum: {
+        primary: '#00FFFF',
+        secondary: '#0EA5E9',
+        accent: '#3B82F6',
+        plasma: '#06B6D4',
+        field: '#1E40AF',
+        dimensional: '#10B981'
+      },
+      gradients: {
+        quantum: 'linear-gradient(135deg, #00FFFF 0%, #0EA5E9 50%, #3B82F6 100%)',
+        neural: 'linear-gradient(45deg, #1E40AF, #06B6D4, #00FFFF, #10B981)',
+        plasma: 'linear-gradient(90deg, #00FFFF, #06B6D4, #0EA5E9)',
+        dimensional: 'linear-gradient(180deg, #0F172A, #1E293B, #334155)'
+      },
+      shadows: {
+        quantum: '0 0 20px rgba(0, 255, 255, 0.3)',
+        glow: '0 0 40px rgba(14, 165, 233, 0.6)',
+        neural: '0 0 30px rgba(30, 64, 175, 0.4)'
+      }
     },
-    'quantum-light': {
-        name: 'Quantum Light',
-        colors: {
-            quantum: {
-                primary: '#0EA5E9',
-                secondary: '#3B82F6',
-                accent: '#06B6D4',
-                plasma: '#00FFFF',
-                field: '#6366F1',
-                dimensional: '#10B981'
-            },
-            gradients: {
-                quantum: 'linear-gradient(135deg, #0EA5E9 0%, #3B82F6 50%, #06B6D4 100%)',
-                neural: 'linear-gradient(45deg, #6366F1, #3B82F6, #0EA5E9, #10B981)',
-                plasma: 'linear-gradient(90deg, #0EA5E9, #3B82F6, #06B6D4)',
-                dimensional: 'linear-gradient(180deg, #F8FAFC, #E2E8F0, #CBD5E1)'
-            },
-            shadows: {
-                quantum: '0 0 20px rgba(14, 165, 233, 0.2)',
-                glow: '0 0 40px rgba(59, 130, 246, 0.4)',
-                neural: '0 0 30px rgba(99, 102, 241, 0.3)'
-            }
-        },
-        animations: {
-            quantum: 'quantumPulse 3s ease-in-out infinite',
-            plasma: 'plasmaFlow 4s linear infinite',
-            neural: 'neuralSync 2s ease-in-out infinite alternate'
-        }
+    animations: {
+      quantum: 'quantumPulse 3s ease-in-out infinite',
+      plasma: 'plasmaFlow 4s linear infinite',
+      neural: 'neuralSync 2s ease-in-out infinite alternate'
     }
+  },
+  'quantum-light': {
+    name: 'Quantum Light',
+    colors: {
+      quantum: {
+        primary: '#0EA5E9',
+        secondary: '#3B82F6',
+        accent: '#06B6D4',
+        plasma: '#00FFFF',
+        field: '#2563EB',
+        dimensional: '#10B981'
+      },
+      gradients: {
+        quantum: 'linear-gradient(135deg, #0EA5E9 0%, #3B82F6 50%, #06B6D4 100%)',
+        neural: 'linear-gradient(45deg, #2563EB, #3B82F6, #0EA5E9, #10B981)',
+        plasma: 'linear-gradient(90deg, #0EA5E9, #3B82F6, #06B6D4)',
+        dimensional: 'linear-gradient(180deg, #F8FAFC, #E2E8F0, #CBD5E1)'
+      },
+      shadows: {
+        quantum: '0 0 20px rgba(14, 165, 233, 0.2)',
+        glow: '0 0 40px rgba(59, 130, 246, 0.4)',
+        neural: '0 0 30px rgba(37, 99, 235, 0.3)'
+      }
+    },
+    animations: {
+      quantum: 'quantumPulse 3s ease-in-out infinite',
+      plasma: 'plasmaFlow 4s linear infinite',
+      neural: 'neuralSync 2s ease-in-out infinite alternate'
+    }
+  }
 };
 
 interface QuantumThemeContextType {
-    currentTheme: QuantumTheme;
-    switchTheme: (themeName: string) => void;
-    applyQuantumEffect: (element: HTMLElement, effect: string) => void;
-    generateQuantumGradient: (type: keyof QuantumTheme['colors']['gradients']) => string;
+  currentTheme: QuantumTheme;
+  switchTheme: (themeName: string) => void;
+  applyQuantumEffect: (element: HTMLElement, effect: string) => void;
+  generateQuantumGradient: (type: keyof QuantumTheme['colors']['gradients']) => string;
 }
 
 const QuantumThemeContext = createContext<QuantumThemeContextType | undefined>(undefined);
 
 export const useQuantumTheme = () => {
-    const context = useContext(QuantumThemeContext);
-    if (!context) {
-        throw new Error('useQuantumTheme must be used within a QuantumThemeProvider');
-    }
-    return context;
+  const context = useContext(QuantumThemeContext);
+  if (!context) {
+    throw new Error('useQuantumTheme must be used within a QuantumThemeProvider');
+  }
+  return context;
 };
 
 interface QuantumThemeProviderProps {
-    children: React.ReactNode;
-    defaultTheme?: string;
+  children: React.ReactNode;
+  defaultTheme?: string;
 }
 
 export default function QuantumThemeProvider({
-    children,
-    defaultTheme = 'quantum-dark'
+  children,
+  defaultTheme = 'quantum-dark'
 }: QuantumThemeProviderProps) {
-    const [currentThemeName, setCurrentThemeName] = useState(defaultTheme);
-    const currentTheme = quantumThemes[currentThemeName];
+  const [currentThemeName, setCurrentThemeName] = useState(defaultTheme);
+  const currentTheme = quantumThemes[currentThemeName];
 
-    useEffect(() => {
-        if (!currentTheme) return;
+  useEffect(() => {
+    if (!currentTheme) return;
 
-        // Apply quantum CSS variables to document root
-        const root = document.documentElement;
-        const theme = currentTheme;
+    // Apply quantum CSS variables to document root
+    const root = document.documentElement;
+    const theme = currentTheme;
 
-        // Set quantum color variables
-        Object.entries(theme.colors.quantum).forEach(([key, value]) => {
-            root.style.setProperty(`--quantum-${key}`, value);
-        });
+    // Set quantum color variables
+    Object.entries(theme.colors.quantum).forEach(([key, value]) => {
+      root.style.setProperty(`--quantum-${key}`, value);
+    });
 
-        // Set gradient variables
-        Object.entries(theme.colors.gradients).forEach(([key, value]) => {
-            root.style.setProperty(`--gradient-${key}`, value);
-        });
+    // Set gradient variables
+    Object.entries(theme.colors.gradients).forEach(([key, value]) => {
+      root.style.setProperty(`--gradient-${key}`, value);
+    });
 
-        // Set shadow variables
-        Object.entries(theme.colors.shadows).forEach(([key, value]) => {
-            root.style.setProperty(`--shadow-${key}`, value);
-        });
+    // Set shadow variables
+    Object.entries(theme.colors.shadows).forEach(([key, value]) => {
+      root.style.setProperty(`--shadow-${key}`, value);
+    });
 
-        // Add quantum animations to stylesheet
-        const style = document.createElement('style');
-        style.textContent = `
+    // Add quantum animations to stylesheet
+    const style = document.createElement('style');
+    style.textContent = `
       @keyframes quantumPulse {
         0%, 100% { 
           opacity: 0.7; 
@@ -319,64 +319,64 @@ export default function QuantumThemeProvider({
       }
     `;
 
-        document.head.appendChild(style);
+    document.head.appendChild(style);
 
-        return () => {
-            document.head.removeChild(style);
-        };
-    }, [currentTheme]);
-
-    const switchTheme = (themeName: string) => {
-        if (quantumThemes[themeName]) {
-            setCurrentThemeName(themeName);
-        }
+    return () => {
+      document.head.removeChild(style);
     };
+  }, [currentTheme]);
 
-    const applyQuantumEffect = (element: HTMLElement, effect: string) => {
-        const effects = {
-            glow: 'quantum-glow',
-            pulse: 'quantum-pulse',
-            shimmer: 'quantum-shimmer',
-            phase: 'quantum-phase',
-            gradient: 'quantum-gradient',
-            neural: 'neural-gradient',
-            plasma: 'plasma-gradient'
-        };
-
-        const className = effects[effect as keyof typeof effects];
-        if (className) {
-            element.classList.add(className);
-        }
-    };
-
-    const generateQuantumGradient = (type: keyof QuantumTheme['colors']['gradients']) => {
-        if (!currentTheme) return '';
-        return currentTheme.colors.gradients[type];
-    };
-
-    if (!currentTheme) {
-        return <div>Loading quantum theme...</div>;
+  const switchTheme = (themeName: string) => {
+    if (quantumThemes[themeName]) {
+      setCurrentThemeName(themeName);
     }
+  };
 
-    const contextValue: QuantumThemeContextType = {
-        currentTheme,
-        switchTheme,
-        applyQuantumEffect,
-        generateQuantumGradient
+  const applyQuantumEffect = (element: HTMLElement, effect: string) => {
+    const effects = {
+      glow: 'quantum-glow',
+      pulse: 'quantum-pulse',
+      shimmer: 'quantum-shimmer',
+      phase: 'quantum-phase',
+      gradient: 'quantum-gradient',
+      neural: 'neural-gradient',
+      plasma: 'plasma-gradient'
     };
 
-    return (
-        <NextThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
-            disableTransitionOnChange
-        >
-            <QuantumThemeContext.Provider value={contextValue}>
-                <div className="quantum-app">
-                    {children}
-                </div>
-            </QuantumThemeContext.Provider>
-        </NextThemeProvider>
-    );
+    const className = effects[effect as keyof typeof effects];
+    if (className) {
+      element.classList.add(className);
+    }
+  };
+
+  const generateQuantumGradient = (type: keyof QuantumTheme['colors']['gradients']) => {
+    if (!currentTheme) return '';
+    return currentTheme.colors.gradients[type];
+  };
+
+  if (!currentTheme) {
+    return <div>Loading quantum theme...</div>;
+  }
+
+  const contextValue: QuantumThemeContextType = {
+    currentTheme,
+    switchTheme,
+    applyQuantumEffect,
+    generateQuantumGradient
+  };
+
+  return (
+    <NextThemeProvider
+      attribute="class"
+      defaultTheme="dark"
+      enableSystem={false}
+      disableTransitionOnChange
+    >
+      <QuantumThemeContext.Provider value={contextValue}>
+        <div className="quantum-app">
+          {children}
+        </div>
+      </QuantumThemeContext.Provider>
+    </NextThemeProvider>
+  );
 } 

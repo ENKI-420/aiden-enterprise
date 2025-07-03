@@ -539,105 +539,194 @@ export default function AgentLaboratory() {
                                                         onClick={handleCreateAgent}
                                                         className="flex-1 bg-gradient-to-r from-blue-600 to-green-500"
                                                         disabled={!newAgent.name || !newAgent.description}
+                                                    >
                                                         Create Agent
                                                     </Button>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </motion.div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </TabsContent>
+
+                    {/* Test Scenarios Tab */}
+                    <TabsContent value="scenarios" className="space-y-6">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-xl font-semibold text-purple-300">Test Scenarios</h2>
+                            <Button
+                                className="bg-gradient-to-r from-blue-600 to-green-500"
+                            >
+                                <Plus className="w-4 h-4 mr-2" />
+                                Create Scenario
+                            </Button>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {scenarios.map((scenario) => (
+                                <motion.div
+                                    key={scenario.id}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    <Card className="bg-slate-900/50 border-slate-700/50 hover:border-blue-500/50 transition-all cursor-pointer h-full">
+                                        <CardHeader>
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <FlaskConical className="w-6 h-6 text-blue-400" />
+                                                    <div>
+                                                        <CardTitle className="text-lg text-white">{scenario.name}</CardTitle>
+                                                        <p className="text-sm text-gray-400 capitalize">{scenario.domain} • {scenario.difficulty}</p>
+                                                    </div>
+                                                </div>
+                                                <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/50">
+                                                    {scenario.difficulty}
+                                                </Badge>
+                                            </div>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            <p className="text-sm text-gray-300">{scenario.description}</p>
+
+                                            <div className="space-y-2">
+                                                <h4 className="text-sm font-medium text-blue-300">Constraints</h4>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {scenario.constraints.slice(0, 2).map((constraint, index) => (
+                                                        <Badge key={index} variant="outline" className="text-xs">
+                                                            {constraint}
+                                                        </Badge>
+                                                    ))}
+                                                    {scenario.constraints.length > 2 && (
+                                                        <Badge variant="outline" className="text-xs">
+                                                            +{scenario.constraints.length - 2} more
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <h4 className="text-sm font-medium text-blue-300">Metrics</h4>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {scenario.metrics.map((metric, index) => (
+                                                        <Badge key={index} variant="outline" className="text-xs">
+                                                            {metric.replace('_', ' ')}
+                                                        </Badge>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => setSelectedScenario(scenario)}
+                                                    className="flex-1"
+                                                >
+                                                    <Settings className="w-3 h-3 mr-1" />
+                                                    Configure
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    className="flex-1 bg-green-600 hover:bg-green-700"
+                                                    onClick={() => {
+                                                        if (selectedAgent) {
+                                                            handleTestAgent(selectedAgent, scenario);
+                                                        }
+                                                    }}
+                                                    disabled={!selectedAgent}
+                                                >
+                                                    <Play className="w-3 h-3 mr-1" />
+                                                    Run Test
+                                                </Button>
                                             </div>
                                         </CardContent>
                                     </Card>
                                 </motion.div>
-                                </motion.div>
-                            )}
-                    </AnimatePresence>
-                </TabsContent>
+                            ))}
+                        </div>
+                    </TabsContent>
 
-                {/* Test Executions Tab */}
-                <TabsContent value="executions" className="space-y-6">
-                    <h2 className="text-xl font-semibold text-purple-300">Test Executions</h2>
+                    {/* Test Executions Tab */}
+                    <TabsContent value="executions" className="space-y-6">
+                        <h2 className="text-xl font-semibold text-purple-300">Test Executions</h2>
 
-                    <div className="space-y-4">
-                        {executions.map((execution) => {
-                            const agent = agents.find(a => a.id === execution.agentId);
-                            const scenario = scenarios.find(s => s.id === execution.scenarioId);
+                        <div className="space-y-4">
+                            {executions.map((execution) => {
+                                const agent = agents.find(a => a.id === execution.agentId);
+                                const scenario = scenarios.find(s => s.id === execution.scenarioId);
 
-                            return (
-                                <Card key={execution.id} className="bg-slate-900/50 border-slate-700/50">
-                                    <CardContent className="p-6">
-                                        <div className="flex items-center justify-between mb-4">
+                                return (
+                                    <Card key={execution.id} className="bg-slate-900/50 border-slate-700/50">
+                                        <CardContent className="p-6">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div>
+                                                    <h3 className="font-semibold text-white">
+                                                        {agent?.name} → {scenario?.name}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-400">
+                                                        Started: {execution.startTime.toLocaleTimeString()}
+                                                    </p>
+                                                </div>
+                                                <Badge className={getStatusColor(execution.status)}>
+                                                    {execution.status}
+                                                </Badge>
+                                            </div>
+
+                                            {execution.status === 'completed' && (
+                                                <div className="grid grid-cols-4 gap-4 mb-4">
+                                                    <div className="text-center">
+                                                        <p className="text-lg font-bold text-green-300">
+                                                            {execution.metrics.accuracy.toFixed(1)}%
+                                                        </p>
+                                                        <p className="text-xs text-gray-400">Accuracy</p>
+                                                    </div>
+                                                    <div className="text-center">
+                                                        <p className="text-lg font-bold text-blue-300">
+                                                            {execution.metrics.executionTime}ms
+                                                        </p>
+                                                        <p className="text-xs text-gray-400">Execution Time</p>
+                                                    </div>
+                                                    <div className="text-center">
+                                                        <p className="text-lg font-bold text-purple-300">
+                                                            {execution.metrics.efficiency.toFixed(1)}%
+                                                        </p>
+                                                        <p className="text-xs text-gray-400">Efficiency</p>
+                                                    </div>
+                                                    <div className="text-center">
+                                                        <p className="text-lg font-bold text-orange-300">
+                                                            {execution.metrics.resourceUsage.toFixed(1)}%
+                                                        </p>
+                                                        <p className="text-xs text-gray-400">Resource Usage</p>
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             <div>
-                                                <h3 className="font-semibold text-white">
-                                                    {agent?.name} → {scenario?.name}
-                                                </h3>
-                                                <p className="text-sm text-gray-400">
-                                                    Started: {execution.startTime.toLocaleTimeString()}
-                                                </p>
+                                                <h4 className="text-sm font-medium text-purple-300 mb-2">Execution Logs</h4>
+                                                <ScrollArea className="h-32 bg-slate-800/50 rounded-lg p-3">
+                                                    {execution.logs.map((log, index) => (
+                                                        <p key={index} className="text-xs text-gray-300 mb-1">
+                                                            {log}
+                                                        </p>
+                                                    ))}
+                                                </ScrollArea>
                                             </div>
-                                            <Badge className={getStatusColor(execution.status)}>
-                                                {execution.status}
-                                            </Badge>
-                                        </div>
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    </TabsContent>
 
-                                        {execution.status === 'completed' && (
-                                            <div className="grid grid-cols-4 gap-4 mb-4">
-                                                <div className="text-center">
-                                                    <p className="text-lg font-bold text-green-300">
-                                                        {execution.metrics.accuracy.toFixed(1)}%
-                                                    </p>
-                                                    <p className="text-xs text-gray-400">Accuracy</p>
-                                                </div>
-                                                <div className="text-center">
-                                                    <p className="text-lg font-bold text-blue-300">
-                                                        {execution.metrics.executionTime}ms
-                                                    </p>
-                                                    <p className="text-xs text-gray-400">Execution Time</p>
-                                                </div>
-                                                <div className="text-center">
-                                                    <p className="text-lg font-bold text-purple-300">
-                                                        {execution.metrics.efficiency.toFixed(1)}%
-                                                    </p>
-                                                    <p className="text-xs text-gray-400">Efficiency</p>
-                                                </div>
-                                                <div className="text-center">
-                                                    <p className="text-lg font-bold text-orange-300">
-                                                        {execution.metrics.resourceUsage.toFixed(1)}%
-                                                    </p>
-                                                    <p className="text-xs text-gray-400">Resource Usage</p>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <div>
-                                            <h4 className="text-sm font-medium text-purple-300 mb-2">Execution Logs</h4>
-                                            <ScrollArea className="h-32 bg-slate-800/50 rounded-lg p-3">
-                                                {execution.logs.map((log, index) => (
-                                                    <p key={index} className="text-xs text-gray-300 mb-1">
-                                                        {log}
-                                                    </p>
-                                                ))}
-                                            </ScrollArea>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            );
-                        })}
-                    </div>
-                </TabsContent>
-
-                {/* Other tabs */}
-                <TabsContent value="scenarios">
-                    <div className="text-center py-12">
-                        <FlaskConical className="w-16 h-16 mx-auto mb-4 text-gray-500" />
-                        <p className="text-gray-400">Test Scenarios interface coming soon...</p>
-                    </div>
-                </TabsContent>
-
-                <TabsContent value="analytics">
-                    <div className="text-center py-12">
-                        <BarChart3 className="w-16 h-16 mx-auto mb-4 text-gray-500" />
-                        <p className="text-gray-400">Performance Analytics dashboard coming soon...</p>
-                    </div>
-                </TabsContent>
-            </Tabs>
+                    {/* Other tabs */}
+                    <TabsContent value="analytics">
+                        <div className="text-center py-12">
+                            <BarChart3 className="w-16 h-16 mx-auto mb-4 text-gray-500" />
+                            <p className="text-gray-400">Performance Analytics dashboard coming soon...</p>
+                        </div>
+                    </TabsContent>
+                </Tabs>
+            </div>
         </div>
-        </div >
     );
 } 

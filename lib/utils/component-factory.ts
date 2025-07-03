@@ -4,7 +4,7 @@
  */
 
 import { MotionProps } from 'framer-motion';
-import { ReactNode } from 'react';
+import { ComponentType, ReactNode } from 'react';
 
 // Animation presets
 export const animations = {
@@ -37,22 +37,22 @@ export const animations = {
     }
 };
 
-// Status indicators
+// Status indicators - Professional colors for military, health, legal
 export const statusIndicators = {
     operational: { color: 'text-green-400', bg: 'bg-green-900/20', border: 'border-green-500/30' },
     warning: { color: 'text-yellow-400', bg: 'bg-yellow-900/20', border: 'border-yellow-500/30' },
     error: { color: 'text-red-400', bg: 'bg-red-900/20', border: 'border-red-500/30' },
     info: { color: 'text-blue-400', bg: 'bg-blue-900/20', border: 'border-blue-500/30' },
-    processing: { color: 'text-purple-400', bg: 'bg-purple-900/20', border: 'border-purple-500/30' }
+    processing: { color: 'text-blue-400', bg: 'bg-blue-900/20', border: 'border-blue-500/30' }
 };
 
-// Enterprise card variants
+// Enterprise card variants - Professional colors for military, health, legal
 export const cardVariants = {
     default: 'bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10',
     glass: 'bg-slate-900/50 backdrop-blur-md border-slate-700/50',
     enterprise: 'bg-gradient-to-br from-slate-900/90 to-slate-800/90 border-slate-700/50',
-    quantum: 'bg-gradient-to-br from-blue-900/20 to-purple-900/20 border-blue-500/30',
-    neural: 'bg-gradient-to-br from-purple-900/20 to-pink-900/20 border-purple-500/30',
+    quantum: 'bg-gradient-to-br from-blue-900/20 to-cyan-900/20 border-blue-500/30',
+    neural: 'bg-gradient-to-br from-blue-900/20 to-teal-900/20 border-blue-500/30',
     success: 'bg-gradient-to-br from-green-900/20 to-emerald-900/20 border-green-500/30'
 };
 
@@ -121,7 +121,7 @@ export function createGradientButton(
     variant: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' = 'primary'
 ) {
     const variants = {
-        primary: 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700',
+        primary: 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700',
         secondary: 'bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800',
         success: 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700',
         warning: 'bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700',
@@ -160,5 +160,139 @@ export const cssUtils = {
     generateCardClasses: (variant: keyof typeof cardVariants, additional?: string): string => {
         const base = cardVariants[variant];
         return additional ? `${base} ${additional}` : base;
+    }
+};
+
+export interface ComponentConfig {
+    type: string;
+    variant?: string;
+    theme?: string;
+    className?: string;
+}
+
+export interface StyleVariants {
+    [key: string]: {
+        color: string;
+        bg: string;
+        border: string;
+    };
+}
+
+export interface ThemeVariants {
+    [key: string]: string;
+}
+
+export interface ButtonVariants {
+    [key: string]: string;
+}
+
+// Professional color schemes - NO PURPLE
+export const statusVariants: StyleVariants = {
+    active: { color: 'text-emerald-400', bg: 'bg-emerald-900/20', border: 'border-emerald-500/30' },
+    pending: { color: 'text-amber-400', bg: 'bg-amber-900/20', border: 'border-amber-500/30' },
+    completed: { color: 'text-blue-400', bg: 'bg-blue-900/20', border: 'border-blue-500/30' },
+    error: { color: 'text-red-400', bg: 'bg-red-900/20', border: 'border-red-500/30' },
+    warning: { color: 'text-orange-400', bg: 'bg-orange-900/20', border: 'border-orange-500/30' },
+    info: { color: 'text-cyan-400', bg: 'bg-cyan-900/20', border: 'border-cyan-500/30' },
+    success: { color: 'text-green-400', bg: 'bg-green-900/20', border: 'border-green-500/30' },
+    processing: { color: 'text-blue-400', bg: 'bg-blue-900/20', border: 'border-blue-500/30' }
+};
+
+// Professional theme variants - NO PURPLE
+export const themeVariants: ThemeVariants = {
+    default: 'bg-slate-900/50 border-slate-700/50',
+    primary: 'bg-blue-900/20 border-blue-500/30',
+    secondary: 'bg-slate-800/50 border-slate-600/50',
+    quantum: 'bg-gradient-to-br from-blue-900/20 to-cyan-900/20 border-blue-500/30',
+    neural: 'bg-gradient-to-br from-blue-900/20 to-teal-900/20 border-blue-500/30',
+    success: 'bg-green-900/20 border-green-500/30',
+    warning: 'bg-amber-900/20 border-amber-500/30',
+    danger: 'bg-red-900/20 border-red-500/30'
+};
+
+// Professional button variants - NO PURPLE
+export const buttonVariants: ButtonVariants = {
+    default: 'bg-slate-800 hover:bg-slate-700 text-white border-slate-600',
+    primary: 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700',
+    secondary: 'bg-slate-700 hover:bg-slate-600 text-slate-200 border-slate-500',
+    success: 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700',
+    warning: 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700',
+    danger: 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700',
+    ghost: 'bg-transparent hover:bg-slate-800/50 text-slate-300 border-transparent',
+    outline: 'bg-transparent hover:bg-slate-800 text-slate-300 border-slate-600'
+};
+
+export class ComponentFactory {
+    private static themes: Map<string, ThemeVariants> = new Map();
+
+    static registerTheme(name: string, theme: ThemeVariants): void {
+        this.themes.set(name, theme);
+    }
+
+    static getTheme(name: string): ThemeVariants | undefined {
+        return this.themes.get(name);
+    }
+
+    static createComponent<T extends ComponentType<any>>(
+        Component: T,
+        config: ComponentConfig
+    ): T {
+        // Component factory logic here
+        return Component;
+    }
+
+    static generateClassName(config: ComponentConfig): string {
+        const { type, variant = 'default', theme = 'default' } = config;
+
+        let className = config.className || '';
+
+        // Apply base styles
+        if (type === 'card') {
+            className += ' rounded-lg border shadow-sm ';
+        } else if (type === 'button') {
+            className += ' inline-flex items-center justify-center rounded-md text-sm font-medium ';
+        }
+
+        // Apply theme
+        if (themeVariants[theme]) {
+            className += themeVariants[theme] + ' ';
+        }
+
+        // Apply variant
+        if (type === 'button' && buttonVariants[variant]) {
+            className += buttonVariants[variant] + ' ';
+        } else if (statusVariants[variant]) {
+            const status = statusVariants[variant];
+            className += `${status.color} ${status.bg} ${status.border} `;
+        }
+
+        return className.trim();
+    }
+}
+
+// Professional utility functions
+export const createProfessionalGradient = (type: 'primary' | 'secondary' | 'accent' = 'primary'): string => {
+    switch (type) {
+        case 'primary':
+            return 'bg-gradient-to-r from-blue-600 to-cyan-600';
+        case 'secondary':
+            return 'bg-gradient-to-r from-slate-600 to-slate-700';
+        case 'accent':
+            return 'bg-gradient-to-r from-teal-600 to-blue-600';
+        default:
+            return 'bg-gradient-to-r from-blue-600 to-cyan-600';
+    }
+};
+
+export const createProfessionalShadow = (intensity: 'low' | 'medium' | 'high' = 'medium'): string => {
+    switch (intensity) {
+        case 'low':
+            return 'shadow-sm';
+        case 'medium':
+            return 'shadow-md';
+        case 'high':
+            return 'shadow-lg';
+        default:
+            return 'shadow-md';
     }
 }; 

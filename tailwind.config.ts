@@ -94,12 +94,12 @@ const config = {
           danger: "#EF4444", // Red 500
           success: "#10B981", // Emerald 500
         },
-        // Aiden Engine specific colors
+        // Professional AI Engine colors - NO PURPLE
         aiden: {
           primary: "#0EA5E9", // Sky blue
           secondary: "#10B981", // Emerald green
           accent: "#06B6D4", // Cyan
-          neural: "#8B5CF6", // Violet 500
+          neural: "#1E40AF", // Professional blue instead of purple
           energy: "#F59E0B", // Amber 500
           intelligence: "#06B6D4", // Cyan
         },
@@ -162,7 +162,7 @@ const config = {
         "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "aiden-gradient": "linear-gradient(135deg, #0EA5E9 0%, #10B981 50%, #06B6D4 100%)",
         "defense-gradient": "linear-gradient(135deg, #0F172A 0%, #0EA5E9 25%, #10B981 75%, #06B6D4 100%)",
-        "neural-gradient": "linear-gradient(45deg, #0EA5E9, #10B981, #06B6D4, #8B5CF6)",
+        "neural-gradient": "linear-gradient(45deg, #0EA5E9, #10B981, #06B6D4, #1E40AF)",
       },
     },
   },

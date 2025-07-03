@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://agiledefensesystems.com',
+    url: 'https://agiledefensesystems.us',
     title: 'Agile Defense Systems | Powered by the Aiden Engine',
     description:
       'Advanced AI-driven defense and healthcare automation platform with enterprise-grade security and multi-modal AI orchestration.',
@@ -123,7 +123,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             background: linear-gradient(135deg, #0F172A 0%, #0EA5E9 25%, #10B981 75%, #06B6D4 100%);
           }
           .neural-gradient {
-            background: linear-gradient(45deg, #0EA5E9, #10B981, #06B6D4, #8B5CF6);
+            background: linear-gradient(45deg, #0EA5E9, #10B981, #06B6D4, #1E40AF);
             background-size: 400% 400%;
             animation: energy-flow 4s ease infinite;
           }
