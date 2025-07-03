@@ -1,23 +1,23 @@
 "use client";
 
-import { EnhancedPageLayout } from '@/components/ai/AIEnhancedLayout';
-import { badgeVariants } from '@/components/ui/design-system';
-import { EnhancedButton } from '@/components/ui/enhanced-button';
-import { CardContent, CardFooter, CardHeader, EnhancedCard } from '@/components/ui/enhanced-card';
-import { cn } from '@/lib/utils';
 import {
-    ArrowRightIcon,
-    ArrowTrendingUpIcon,
-    BeakerIcon,
-    ClockIcon,
-    CommandLineIcon,
-    CpuChipIcon,
-    HeartIcon,
-    PlusIcon,
-    ShieldCheckIcon,
-    SparklesIcon
+  ArrowRightIcon,
+  ArrowTrendingUpIcon,
+  BeakerIcon,
+  ClockIcon,
+  CommandLineIcon,
+  CpuChipIcon,
+  HeartIcon,
+  PlusIcon,
+  ShieldCheckIcon,
+  SparklesIcon
 } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import { EnhancedPageLayout } from '../../components/ai/AIEnhancedLayout';
+import { badgeVariants } from '../../components/ui/design-system';
+import { EnhancedButton } from '../../components/ui/enhanced-button';
+import { CardContent, CardFooter, CardHeader, EnhancedCard } from '../../components/ui/enhanced-card';
+import { cn } from '../../lib/utils';
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -152,8 +152,8 @@ export default function DashboardPage() {
             <EnhancedCard
               key={index}
               variant={action.category === 'ai' ? 'ai' :
-                      action.category === 'healthcare' ? 'healthcare' :
-                      action.category === 'defense' ? 'defense' : 'interactive'}
+                action.category === 'healthcare' ? 'healthcare' :
+                  action.category === 'defense' ? 'defense' : 'interactive'}
               interactive
               glow={action.category === 'ai'}
               className="hover:scale-105 transition-transform duration-300"
@@ -166,8 +166,8 @@ export default function DashboardPage() {
                     <span className={cn(
                       badgeVariants({
                         variant: action.category === 'ai' ? 'ai' :
-                                 action.category === 'healthcare' ? 'healthcare' :
-                                 action.category === 'defense' ? 'defense' : 'default'
+                          action.category === 'healthcare' ? 'healthcare' :
+                            action.category === 'defense' ? 'defense' : 'default'
                       })
                     )}>
                       {action.badge}
