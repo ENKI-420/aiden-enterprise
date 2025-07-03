@@ -55,7 +55,7 @@ function QuantumPlasmaField({ count = 8000 }) {
                     const i3 = i * 3;
 
                     // Quantum fluctuation
-                    if (positions[i3] !== undefined) {
+                    if (positions[i3] !== undefined && positions[i3 + 1] !== undefined && positions[i3 + 2] !== undefined) {
                         positions[i3] += Math.sin(time + i * 0.01) * 0.002;
                         positions[i3 + 1] += Math.cos(time + i * 0.015) * 0.002;
                         positions[i3 + 2] += Math.sin(time * 0.5 + i * 0.02) * 0.001;
@@ -63,7 +63,7 @@ function QuantumPlasmaField({ count = 8000 }) {
 
                     // Energy state fluctuation
                     const energy = (Math.sin(time + i * 0.1) + 1) * 0.5;
-                    if (colors[i3] !== undefined) {
+                    if (colors[i3] !== undefined && colors[i3 + 1] !== undefined && colors[i3 + 2] !== undefined) {
                         colors[i3] = 0.1 + energy * 0.3;
                         colors[i3 + 1] = 0.4 + energy * 0.4;
                         colors[i3 + 2] = 0.8 + energy * 0.2;
@@ -207,7 +207,7 @@ function InterdimensionalFlag() {
     }, [flagTexture]);
 
     useFrame((state) => {
-        if (materialRef.current) {
+        if (materialRef.current && materialRef.current.uniforms && materialRef.current.uniforms.time) {
             materialRef.current.uniforms.time.value = state.clock.elapsedTime;
         }
         if (meshRef.current) {

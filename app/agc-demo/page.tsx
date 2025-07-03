@@ -64,7 +64,7 @@ export default function AGCDemo() {
             });
             const result = await response.json();
 
-            setDemoResults(prev => ({
+            setDemoResults((prev: any) => ({
                 ...prev,
                 [action]: result
             }));
@@ -279,7 +279,7 @@ export default function AGCDemo() {
                                         bounds: { north: 39.0, south: 38.0, east: -76.0, west: -78.0 },
                                         resolution: 1
                                     })}
-                                    className="w-full bg-purple-600 hover:bg-purple-700"
+                                    className="w-full bg-blue-600 hover:bg-blue-700"
                                 >
                                     Load 3D Terrain Model
                                 </Button>

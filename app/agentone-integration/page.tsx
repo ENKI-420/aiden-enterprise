@@ -5,11 +5,11 @@
 
 export default function AgentOneIntegrationPage() {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-purple-950 text-white">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950 text-white">
             {/* Hero Section */}
             <section className="py-20 px-4">
                 <div className="max-w-4xl mx-auto text-center">
-                    <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
                         AGENTone Integration
                     </h1>
                     <p className="text-xl md:text-2xl mb-8 text-gray-300">
@@ -32,18 +32,18 @@ export default function AgentOneIntegrationPage() {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {/* Agent Laboratory */}
-                        <div className="bg-gray-900/50 rounded-lg p-8 border border-purple-500/30 hover:border-purple-400/50 transition-all">
+                        <div className="bg-gray-900/50 rounded-lg p-8 border border-blue-500/30 hover:border-blue-400/50 transition-all">
                             <div className="text-center mb-6">
-                                <div className="w-16 h-16 mx-auto mb-4 bg-purple-500/20 rounded-full flex items-center justify-center">
+                                <div className="w-16 h-16 mx-auto mb-4 bg-blue-500/20 rounded-full flex items-center justify-center">
                                     <span className="text-2xl">🧪</span>
                                 </div>
-                                <h3 className="text-xl font-bold text-purple-300 mb-2">Agent Laboratory</h3>
+                                <h3 className="text-xl font-bold text-blue-300 mb-2">Agent Laboratory</h3>
                                 <p className="text-gray-400">Advanced AI Agent Development & Testing Environment</p>
                             </div>
                             <div className="space-y-2 text-sm text-gray-300">
                                 <div className="flex justify-between">
                                     <span>Active Agents:</span>
-                                    <span className="text-purple-400">12</span>
+                                    <span className="text-blue-400">12</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>Success Rate:</span>
@@ -144,19 +144,19 @@ export default function AgentOneIntegrationPage() {
                                 </div>
                             </div>
                             <div className="space-y-4">
-                                <h4 className="text-lg font-semibold text-purple-300">Active Services</h4>
+                                <h4 className="text-lg font-semibold text-blue-300">Active Services</h4>
                                 <div className="space-y-2">
                                     <div className="flex justify-between">
                                         <span className="text-gray-300">IRIS Medical AI</span>
-                                        <span className="text-purple-400">Running</span>
+                                        <span className="text-blue-400">Running</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-300">Defense Analytics</span>
-                                        <span className="text-purple-400">Running</span>
+                                        <span className="text-blue-400">Running</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-300">Legal Assistant</span>
-                                        <span className="text-purple-400">Running</span>
+                                        <span className="text-blue-400">Running</span>
                                     </div>
                                 </div>
                             </div>

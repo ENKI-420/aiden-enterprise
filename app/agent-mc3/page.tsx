@@ -94,7 +94,7 @@ export default function AgentMC3Page() {
       { type: 'System Health', value: `${Math.floor(Math.random() * 20 + 80)}%`, color: 'text-green-400' },
       { type: 'AI Processing', value: `${Math.floor(Math.random() * 30 + 70)}%`, color: 'text-blue-400' },
       { type: 'Memory Usage', value: `${Math.floor(Math.random() * 15 + 85)}%`, color: 'text-yellow-400' },
-      { type: 'Network Latency', value: `${Math.floor(Math.random() * 10 + 5)}ms`, color: 'text-purple-400' },
+      { type: 'Network Latency', value: `${Math.floor(Math.random() * 10 + 5)}ms`, color: 'text-blue-400' },
       { type: 'Active Agents', value: `${Math.floor(Math.random() * 5 + 3)}`, color: 'text-pink-400' }
     ];
 
@@ -260,7 +260,7 @@ export default function AgentMC3Page() {
             <button onClick={() => enhanceContent()} className="px-4 py-2 rounded bg-green-400 hover:bg-green-500 text-black font-bold">
               Manual Enhance
             </button>
-            <button onClick={() => recursiveIterate()} className="px-4 py-2 rounded bg-purple-400 hover:bg-purple-500 text-black font-bold">
+            <button onClick={() => recursiveIterate()} className="px-4 py-2 rounded bg-blue-400 hover:bg-blue-500 text-black font-bold">
               Recursive Iterate
             </button>
           </div>
