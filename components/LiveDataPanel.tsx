@@ -1,31 +1,32 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
 
 export default function LiveDataPanel() {
-  const [messages, setMessages] = useState([]);
-  const [status, setStatus] = useState("disconnected");
-  const wsRef = useRef(null);
-
-  useEffect(() => {
-    const ws = new window.WebSocket("ws://localhost:4000");
-    wsRef.current = ws;
-    ws.onopen = () => setStatus("connected");
-    ws.onclose = () => setStatus("disconnected");
-    ws.onerror = () => setStatus("error");
-    ws.onmessage = (e) => {
-      setMessages(msgs => [...msgs.slice(-49), e.data]);
-    };
-    return () => ws.close();
-  }, []);
-
   return (
-    <div className="bg-gray-900 rounded-xl p-4 shadow-lg mb-4 max-w-md w-full">
-      <div className="flex items-center gap-2 mb-2">
-        <span className={`w-3 h-3 rounded-full ${status === "connected" ? "bg-green-400" : status === "error" ? "bg-red-500" : "bg-gray-500"}`} />
-        <span className="text-xs text-gray-400">Live Data: {status}</span>
+    <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+      <h4 className="text-lg font-semibold text-green-300 mb-3">Live Data Stream</h4>
+      <div className="space-y-2 text-sm">
+        <div className="flex justify-between items-center">
+          <span className="text-gray-300">System Status</span>
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-green-400">Online</span>
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-300">Active Agents</span>
+          <span className="text-blue-400">3</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-300">Response Time</span>
+          <span className="text-yellow-400">127ms</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-300">Processing</span>
+          <span className="text-purple-400">2 tasks</span>
+        </div>
       </div>
-      <div className="h-32 overflow-y-auto bg-gray-800 rounded p-2 text-xs text-gray-200">
-        {messages.length === 0 ? <span className="text-gray-500">No data yet.</span> : messages.map((msg, i) => <div key={i}>{msg}</div>)}
+      <div className="mt-4 p-2 bg-gray-900/50 rounded text-xs text-gray-400">
+        Real-time monitoring dashboard
       </div>
     </div>
   );

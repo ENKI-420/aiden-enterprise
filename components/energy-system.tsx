@@ -1,6 +1,27 @@
-import { useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+"use client";
+
 import { OrbitControls } from '@react-three/drei';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { useRef, useState } from 'react';
+import * as THREE from 'three';
+
+function EnergyField() {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x = state.clock.elapsedTime * 0.2;
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.3;
+    }
+  });
+
+  return (
+    <mesh ref={meshRef}>
+      <torusGeometry args={[1, 0.3, 16, 100]} />
+      <meshStandardMaterial color="#00ff88" wireframe />
+    </mesh>
+  );
+}
 
 export default function EnergySystem() {
   const [energyLevel, setEnergyLevel] = useState(0.5);
@@ -26,9 +47,8 @@ export default function EnergySystem() {
         <div className='mt-2'>Current Intensity: {(energyLevel * 100).toFixed(0)}%</div>
       </div>
       <button
-        className={`px-4 py-2 rounded ${
-          weaponArmed ? 'bg-red-600' : 'bg-green-600'
-        } text-white font-bold`}
+        className={`px-4 py-2 rounded ${weaponArmed ? 'bg-red-600' : 'bg-green-600'
+          } text-white font-bold`}
         onClick={() => setWeaponArmed(!weaponArmed)}
       >
         {weaponArmed ? 'Deactivate Weapon' : 'Arm Weapon'}
@@ -132,6 +152,7 @@ export default function EnergySystem() {
                 emissiveIntensity={energyLevel * 0.7}
               />
             </mesh>
+            <EnergyField />
             <OrbitControls enablePan={false} enableZoom={false} />
           </Canvas>
         </div>

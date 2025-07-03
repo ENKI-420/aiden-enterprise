@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 
-export default function WhiteboardPanel({ open, onClose }) {
+export default function WhiteboardPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const wbRef = useRef(null);
 
   useEffect(() => {
@@ -10,12 +10,12 @@ export default function WhiteboardPanel({ open, onClose }) {
     const script = document.createElement("script");
     script.src = "https://cdn.jsdelivr.net/npm/@tldraw/tldraw@2.0.0-beta.72/dist/tldraw.umd.js";
     script.onload = () => {
-      if (!window.tldraw) {
-        wbRef.current.innerHTML = '<div class="text-red-400">tldraw failed to load.</div>';
+      if (!(window as any).tldraw) {
+        wbRef.current!.innerHTML = '<div class="text-red-400">tldraw failed to load.</div>';
         return;
       }
-      wbRef.current.innerHTML = '';
-      window.tldraw.createTldraw({
+      wbRef.current!.innerHTML = '';
+      (window as any).tldraw.createTldraw({
         container: wbRef.current,
         // Optionally, add more config here
       });
