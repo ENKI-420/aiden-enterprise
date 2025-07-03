@@ -81,8 +81,8 @@ export default function EnergySystem() {
             <mesh position={[0, 1, 0]} rotation={[Math.PI / 2, 0, 0]}>
               <torusGeometry args={[0.8, 0.07, 16, 100]} />
               <meshStandardMaterial
-                color='#a855f7'
-                emissive='#a855f7'
+                color='#3b82f6'
+                emissive='#3b82f6'
                 emissiveIntensity={energyLevel}
               />
             </mesh>

@@ -201,7 +201,7 @@ export default function LandingPage() {
         {/* INDUSTRY SECTION */}
         <section id="industry-section" className="py-24 px-6 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800">
           <div className="max-w-5xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent mb-4">
               Tailored AI Solutions
             </h2>
             <p className="text-gray-300 max-w-2xl mx-auto">
@@ -318,7 +318,7 @@ export default function LandingPage() {
                 description="Real-time threat detection and analysis for defense and cybersecurity operations."
               />
               <UseCaseCard
-                icon={<Database className="w-8 h-8 text-purple-400" />}
+                icon={<Database className="w-8 h-8 text-blue-400" />}
                 title="Data Integration"
                 description="Seamless integration of disparate data sources for comprehensive analytics."
               />

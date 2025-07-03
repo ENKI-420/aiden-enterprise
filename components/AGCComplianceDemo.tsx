@@ -228,7 +228,7 @@ export default function AGCComplianceDemo({ className = '' }: AGCDemoProps) {
                     <Card className="bg-slate-800/50 border-slate-700 text-white">
                         <CardHeader>
                             <CardTitle className="flex items-center space-x-2">
-                                <Map className="h-6 w-6 text-purple-500" />
+                                <Map className="h-6 w-6 text-blue-500" />
                                 <span>🏔️ 3D GeoVolumes API Demo</span>
                             </CardTitle>
                             <CardDescription className="text-slate-300">
@@ -241,7 +241,7 @@ export default function AGCComplianceDemo({ className = '' }: AGCDemoProps) {
                                     onClick={() => runDemo('load-terrain', {
                                         bounds: { north: 39.0, south: 38.0, east: -76.0, west: -78.0 }
                                     })}
-                                    className="bg-purple-600 hover:bg-purple-700"
+                                    className="bg-blue-600 hover:bg-blue-700"
                                 >
                                     🗻 Load 3D Terrain
                                 </Button>
@@ -364,7 +364,7 @@ export default function AGCComplianceDemo({ className = '' }: AGCDemoProps) {
                                         partners: ['US', 'UK', 'CA', 'AU', 'NZ'],
                                         classification: 'UNCLASSIFIED'
                                     })}
-                                    className="bg-purple-600 hover:bg-purple-700"
+                                    className="bg-blue-600 hover:bg-blue-700"
                                 >
                                     🤝 Share with ABCANZ
                                 </Button>
@@ -416,7 +416,7 @@ export default function AGCComplianceDemo({ className = '' }: AGCDemoProps) {
                                 <Button className="w-full bg-blue-600 hover:bg-blue-700">
                                     Submit for AGC Certification
                                 </Button>
-                                <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                                <Button className="w-full bg-blue-600 hover:bg-blue-700">
                                     Generate White Paper PDF
                                 </Button>
                             </div>
