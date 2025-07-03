@@ -470,3 +470,52 @@
 .spinner-enhanced.defense {
   @apply border-t-orange-500;
 }
+
+/* Quantum Theme Integration */
+.quantum-app {
+  --quantum-primary: #00FFFF;
+  --quantum-secondary: #0EA5E9;
+  --quantum-accent: #3B82F6;
+  --quantum-plasma: #06B6D4;
+  --quantum-field: #8B5CF6;
+  --quantum-dimensional: #10B981;
+  
+  --gradient-quantum: linear-gradient(135deg, #00FFFF 0%, #0EA5E9 50%, #3B82F6 100%);
+  --gradient-neural: linear-gradient(45deg, #8B5CF6, #06B6D4, #00FFFF, #10B981);
+  --gradient-plasma: linear-gradient(90deg, #00FFFF, #06B6D4, #0EA5E9);
+  --gradient-dimensional: linear-gradient(180deg, #0F172A, #1E293B, #334155);
+  
+  --shadow-quantum: 0 0 20px rgba(0, 255, 255, 0.3);
+  --shadow-glow: 0 0 40px rgba(14, 165, 233, 0.6);
+  --shadow-neural: 0 0 30px rgba(139, 92, 246, 0.4);
+}
+
+/* Quantum Navigation Enhancements */
+.quantum-nav-active {
+  background: linear-gradient(90deg, rgba(0, 255, 255, 0.1) 0%, rgba(14, 165, 233, 0.1) 100%);
+  border-left: 3px solid var(--quantum-primary);
+  color: var(--quantum-primary);
+}
+
+.quantum-search-glow:focus {
+  box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+  border-color: var(--quantum-primary);
+}
+
+/* Professional Quantum Effects */
+.quantum-grid-bg {
+  background-image:
+    linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.quantum-backdrop {
+  backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.quantum-overlay {
+  background: radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.05) 0%, transparent 70%);
+}

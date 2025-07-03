@@ -4,21 +4,22 @@ import EnhancedWelcomeSystem from "@/components/EnhancedWelcomeSystem";
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import HealthLinkInvestorPitch from "@/components/HealthLinkInvestorPitch";
+import ParticleBackground from "@/components/ParticleBackground";
 import TourGuideProvider from "@/components/TourGuideProvider";
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { motion } from "framer-motion";
 import {
-    ArrowRight,
-    Brain,
-    Building2,
-    Cpu,
-    Database,
-    Network,
-    Shield,
-    Star,
-    Users
+  ArrowRight,
+  Brain,
+  Building2,
+  Cpu,
+  Database,
+  Network,
+  Shield,
+  Star,
+  Users
 } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -131,8 +132,12 @@ export default function LandingPage() {
 
         {/* HERO */}
         <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 py-24 overflow-hidden">
+          {/* Quantum Background */}
+          <div className="absolute inset-0 z-0">
+            <ParticleBackground />
+          </div>
           <video
-            className="absolute inset-0 w-full h-full object-cover opacity-20" autoPlay loop muted playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-10" autoPlay loop muted playsInline
             src="/hero-healthlink.mp4" onError={(e) => { (e.currentTarget as HTMLVideoElement).style.display = 'none'; }}
           />
           <div className="relative z-10 max-w-4xl mx-auto">
@@ -140,9 +145,9 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent"
+              className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent"
             >
-              {copy.title}
+              {(copy && copy.title) ? copy.title : "IRIS-AI Enterprise, Defense, Legal, Healthcare Platform Powered by the IRIS MCP SDK"}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -150,18 +155,45 @@ export default function LandingPage() {
               transition={{ duration: 1, delay: 0.2 }}
               className="mt-6 text-lg md:text-2xl text-gray-300"
             >
-              {copy.tagline}
+              {(copy && copy.tagline) ? copy.tagline : "The industry-leading multi-modal AI orchestration platform for enterprise, defense, legal, and healthcare."}
             </motion.p>
             <motion.ul
               initial="hidden" animate="visible"
               variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.2 } } }}
               className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 text-left"
             >
-              {copy.points.map(p => (
-                <motion.li key={p} variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-gray-200">
-                  {p}
-                </motion.li>
-              ))}
+              {(copy?.points && Array.isArray(copy.points)) ? (
+                copy.points.map(p => (
+                  <motion.li
+                    key={p}
+                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+                    className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-gray-200"
+                  >
+                    {p}
+                  </motion.li>
+                ))
+              ) : (
+                <>
+                  <motion.li
+                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+                    className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-gray-200"
+                  >
+                    Quantum-enhanced analytics, neural model fusion, and adaptive learning for enterprise.
+                  </motion.li>
+                  <motion.li
+                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+                    className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-gray-200"
+                  >
+                    Industry-leading security, compliance, and real-time performance monitoring.
+                  </motion.li>
+                  <motion.li
+                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+                    className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-gray-200"
+                  >
+                    Tailored AI solutions for healthcare, defense, and legal operations.
+                  </motion.li>
+                </>
+              )}
             </motion.ul>
           </div>
         </section>
@@ -177,7 +209,7 @@ export default function LandingPage() {
             </p>
             <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
               {Object.entries(INDUSTRY_COPY).map(([key, val]) => (
-                <div key={key} className={`rounded-2xl p-6 border hover:shadow-xl transition cursor-pointer ${industry===key? 'border-blue-500':'border-white/10'}`} onClick={() => setIndustry(key)} aria-label={`Select ${key}`}>
+                <div key={key} className={`rounded-2xl p-6 border hover:shadow-xl transition cursor-pointer ${industry === key ? 'border-blue-500' : 'border-white/10'}`} onClick={() => setIndustry(key)} aria-label={`Select ${key}`}>
                   <h3 className="text-xl font-semibold text-white mb-2">{val.title}</h3>
                   <p className="text-sm text-gray-400">{val.tagline}</p>
                 </div>

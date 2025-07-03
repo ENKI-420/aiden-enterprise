@@ -537,108 +537,107 @@ export default function AgentLaboratory() {
                                                     </Button>
                                                     <Button
                                                         onClick={handleCreateAgent}
-                                                        className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600"
+                                                        className="flex-1 bg-gradient-to-r from-blue-600 to-green-500"
                                                         disabled={!newAgent.name || !newAgent.description}
-                                                    >
                                                         Create Agent
                                                     </Button>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </motion.div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </TabsContent>
-
-                    {/* Test Executions Tab */}
-                    <TabsContent value="executions" className="space-y-6">
-                        <h2 className="text-xl font-semibold text-purple-300">Test Executions</h2>
-
-                        <div className="space-y-4">
-                            {executions.map((execution) => {
-                                const agent = agents.find(a => a.id === execution.agentId);
-                                const scenario = scenarios.find(s => s.id === execution.scenarioId);
-
-                                return (
-                                    <Card key={execution.id} className="bg-slate-900/50 border-slate-700/50">
-                                        <CardContent className="p-6">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <div>
-                                                    <h3 className="font-semibold text-white">
-                                                        {agent?.name} → {scenario?.name}
-                                                    </h3>
-                                                    <p className="text-sm text-gray-400">
-                                                        Started: {execution.startTime.toLocaleTimeString()}
-                                                    </p>
-                                                </div>
-                                                <Badge className={getStatusColor(execution.status)}>
-                                                    {execution.status}
-                                                </Badge>
-                                            </div>
-
-                                            {execution.status === 'completed' && (
-                                                <div className="grid grid-cols-4 gap-4 mb-4">
-                                                    <div className="text-center">
-                                                        <p className="text-lg font-bold text-green-300">
-                                                            {execution.metrics.accuracy.toFixed(1)}%
-                                                        </p>
-                                                        <p className="text-xs text-gray-400">Accuracy</p>
-                                                    </div>
-                                                    <div className="text-center">
-                                                        <p className="text-lg font-bold text-blue-300">
-                                                            {execution.metrics.executionTime}ms
-                                                        </p>
-                                                        <p className="text-xs text-gray-400">Execution Time</p>
-                                                    </div>
-                                                    <div className="text-center">
-                                                        <p className="text-lg font-bold text-purple-300">
-                                                            {execution.metrics.efficiency.toFixed(1)}%
-                                                        </p>
-                                                        <p className="text-xs text-gray-400">Efficiency</p>
-                                                    </div>
-                                                    <div className="text-center">
-                                                        <p className="text-lg font-bold text-orange-300">
-                                                            {execution.metrics.resourceUsage.toFixed(1)}%
-                                                        </p>
-                                                        <p className="text-xs text-gray-400">Resource Usage</p>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            <div>
-                                                <h4 className="text-sm font-medium text-purple-300 mb-2">Execution Logs</h4>
-                                                <ScrollArea className="h-32 bg-slate-800/50 rounded-lg p-3">
-                                                    {execution.logs.map((log, index) => (
-                                                        <p key={index} className="text-xs text-gray-300 mb-1">
-                                                            {log}
-                                                        </p>
-                                                    ))}
-                                                </ScrollArea>
                                             </div>
                                         </CardContent>
                                     </Card>
-                                );
-                            })}
-                        </div>
-                    </TabsContent>
+                                </motion.div>
+                                </motion.div>
+                            )}
+                    </AnimatePresence>
+                </TabsContent>
 
-                    {/* Other tabs */}
-                    <TabsContent value="scenarios">
-                        <div className="text-center py-12">
-                            <FlaskConical className="w-16 h-16 mx-auto mb-4 text-gray-500" />
-                            <p className="text-gray-400">Test Scenarios interface coming soon...</p>
-                        </div>
-                    </TabsContent>
+                {/* Test Executions Tab */}
+                <TabsContent value="executions" className="space-y-6">
+                    <h2 className="text-xl font-semibold text-purple-300">Test Executions</h2>
 
-                    <TabsContent value="analytics">
-                        <div className="text-center py-12">
-                            <BarChart3 className="w-16 h-16 mx-auto mb-4 text-gray-500" />
-                            <p className="text-gray-400">Performance Analytics dashboard coming soon...</p>
-                        </div>
-                    </TabsContent>
-                </Tabs>
-            </div>
+                    <div className="space-y-4">
+                        {executions.map((execution) => {
+                            const agent = agents.find(a => a.id === execution.agentId);
+                            const scenario = scenarios.find(s => s.id === execution.scenarioId);
+
+                            return (
+                                <Card key={execution.id} className="bg-slate-900/50 border-slate-700/50">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div>
+                                                <h3 className="font-semibold text-white">
+                                                    {agent?.name} → {scenario?.name}
+                                                </h3>
+                                                <p className="text-sm text-gray-400">
+                                                    Started: {execution.startTime.toLocaleTimeString()}
+                                                </p>
+                                            </div>
+                                            <Badge className={getStatusColor(execution.status)}>
+                                                {execution.status}
+                                            </Badge>
+                                        </div>
+
+                                        {execution.status === 'completed' && (
+                                            <div className="grid grid-cols-4 gap-4 mb-4">
+                                                <div className="text-center">
+                                                    <p className="text-lg font-bold text-green-300">
+                                                        {execution.metrics.accuracy.toFixed(1)}%
+                                                    </p>
+                                                    <p className="text-xs text-gray-400">Accuracy</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-lg font-bold text-blue-300">
+                                                        {execution.metrics.executionTime}ms
+                                                    </p>
+                                                    <p className="text-xs text-gray-400">Execution Time</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-lg font-bold text-purple-300">
+                                                        {execution.metrics.efficiency.toFixed(1)}%
+                                                    </p>
+                                                    <p className="text-xs text-gray-400">Efficiency</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-lg font-bold text-orange-300">
+                                                        {execution.metrics.resourceUsage.toFixed(1)}%
+                                                    </p>
+                                                    <p className="text-xs text-gray-400">Resource Usage</p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div>
+                                            <h4 className="text-sm font-medium text-purple-300 mb-2">Execution Logs</h4>
+                                            <ScrollArea className="h-32 bg-slate-800/50 rounded-lg p-3">
+                                                {execution.logs.map((log, index) => (
+                                                    <p key={index} className="text-xs text-gray-300 mb-1">
+                                                        {log}
+                                                    </p>
+                                                ))}
+                                            </ScrollArea>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                </TabsContent>
+
+                {/* Other tabs */}
+                <TabsContent value="scenarios">
+                    <div className="text-center py-12">
+                        <FlaskConical className="w-16 h-16 mx-auto mb-4 text-gray-500" />
+                        <p className="text-gray-400">Test Scenarios interface coming soon...</p>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="analytics">
+                    <div className="text-center py-12">
+                        <BarChart3 className="w-16 h-16 mx-auto mb-4 text-gray-500" />
+                        <p className="text-gray-400">Performance Analytics dashboard coming soon...</p>
+                    </div>
+                </TabsContent>
+            </Tabs>
         </div>
+        </div >
     );
 } 
