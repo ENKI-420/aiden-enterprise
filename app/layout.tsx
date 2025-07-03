@@ -7,7 +7,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import Script from 'next/script';
 
-// Single elegant AI assistant - no overlapping systems (temporarily disabled for debugging)
+// Single elegant AI assistant - no overlapping systems
 
 const inter = Inter({
   subsets: ['latin'],
@@ -280,6 +280,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body className={`${inter.className} antialiased bg-slate-950 text-white transition-colors duration-300 ease-in-out min-h-screen`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           {children}
+          <ElegantAIAssistant />
         </ThemeProvider>
         <Analytics />
       </body>

@@ -1,13 +1,13 @@
 'use client';
 
-import AdvancedAIAssistant from '@/components/AdvancedAIAssistant';
-import { projectSpectraChapters } from '@/components/project-spectra-chapters';
-import Pyramid3DVisualization from '@/components/Pyramid3DVisualization';
-import PyramidMaterialsAnalysis from '@/components/PyramidMaterialsAnalysis';
-import PyramidPhysicsSimulation from '@/components/PyramidPhysicsSimulation';
-import SimpleWelcome from '@/components/SimpleWelcome';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import AdvancedAIAssistant from '../../components/AdvancedAIAssistant';
+import { projectSpectraChapters } from '../../components/project-spectra-chapters';
+import Pyramid3DVisualization from '../../components/Pyramid3DVisualization';
+import PyramidMaterialsAnalysis from '../../components/PyramidMaterialsAnalysis';
+import PyramidPhysicsSimulation from '../../components/PyramidPhysicsSimulation';
+import SimpleWelcome from '../../components/SimpleWelcome';
 
 // Enhanced Video Player Component
 const VideoPlayer = ({ src, title, onTimeUpdate, currentTime }: {
@@ -79,32 +79,29 @@ const TimelineProgress = ({ chapters, currentChapter, onChapterSelect }: {
             <button
               key={chapter.id}
               onClick={() => onChapterSelect(index)}
-              className={`flex items-start gap-4 w-full text-left p-3 rounded-lg transition-all duration-300 ${
-                index === currentChapter
-                  ? 'bg-primary-500/20 border border-primary-400/50 shadow-lg shadow-primary-500/20'
-                  : index < currentChapter
+              className={`flex items-start gap-4 w-full text-left p-3 rounded-lg transition-all duration-300 ${index === currentChapter
+                ? 'bg-primary-500/20 border border-primary-400/50 shadow-lg shadow-primary-500/20'
+                : index < currentChapter
                   ? 'bg-slate-800/50 border border-slate-600/50'
                   : 'bg-slate-900/30 border border-slate-700/30 hover:bg-slate-800/40'
-              }`}
+                }`}
               aria-current={index === currentChapter ? 'true' : 'false'}
               tabIndex={0}
             >
               {/* Chapter Indicator */}
-              <div className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                index === currentChapter
-                  ? 'bg-primary-400 text-black animate-pulse'
-                  : index < currentChapter
+              <div className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${index === currentChapter
+                ? 'bg-primary-400 text-black animate-pulse'
+                : index < currentChapter
                   ? 'bg-secondary-600 text-white'
                   : 'bg-slate-700 text-slate-400'
-              }`}>
+                }`}>
                 {index + 1}
               </div>
 
               {/* Chapter Info */}
               <div className="flex-1 min-w-0">
-                <h3 className={`font-semibold transition-colors duration-300 ${
-                  index === currentChapter ? 'text-primary-100' : 'text-slate-300'
-                }`}>
+                <h3 className={`font-semibold transition-colors duration-300 ${index === currentChapter ? 'text-primary-100' : 'text-slate-300'
+                  }`}>
                   {chapter.title}
                 </h3>
                 <p className="text-sm text-slate-400 mt-1 line-clamp-2">
@@ -221,7 +218,7 @@ const ParticleBackground = () => {
   const [windowDimensions, setWindowDimensions] = useState({ width: 1200, height: 800 });
 
   useEffect(() => {
-     
+
     if (typeof window !== 'undefined') {
       // eslint-disable-next-line no-undef
       setWindowDimensions({ width: window.innerWidth, height: window.innerHeight });
@@ -303,7 +300,7 @@ export default function ProjectSpectraDocumentary() {
 
   // Check if welcome has been completed
   useEffect(() => {
-     
+
     if (typeof window !== 'undefined') {
       // eslint-disable-next-line no-undef
       const hasCompleted = localStorage.getItem('simpleWelcomeCompleted');
@@ -315,7 +312,7 @@ export default function ProjectSpectraDocumentary() {
 
   // Keyboard navigation
   useEffect(() => {
-     
+
     if (typeof window === 'undefined') return;
 
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -335,7 +332,7 @@ export default function ProjectSpectraDocumentary() {
         case ' ':
           e.preventDefault();
           // Toggle video play/pause
-           
+
           if (typeof document !== 'undefined') {
             // eslint-disable-next-line no-undef
             const video = document.querySelector('video');
@@ -361,7 +358,7 @@ export default function ProjectSpectraDocumentary() {
 
   const handleWelcomeComplete = () => {
     setShowWelcome(false);
-     
+
     if (typeof window !== 'undefined') {
       // eslint-disable-next-line no-undef
       localStorage.setItem('simpleWelcomeCompleted', 'true');
@@ -414,11 +411,10 @@ export default function ProjectSpectraDocumentary() {
               <button
                 key={tab.id}
                 onClick={() => setCurrentTab(tab.id)}
-                className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
-                  currentTab === tab.id
-                    ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg'
-                    : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
-                }`}
+                className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${currentTab === tab.id
+                  ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg'
+                  : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
+                  }`}
               >
                 <span>{tab.icon}</span>
                 {tab.label}
