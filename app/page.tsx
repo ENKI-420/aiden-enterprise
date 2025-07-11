@@ -1,453 +1,276 @@
-"use client";
+import { Button } from "@/components/ui/button"
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { ArrowRight, Brain, Users, Zap, Shield, Globe, Sparkles } from "lucide-react"
+import Link from "next/link"
+import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
 
-import EnhancedWelcomeSystem from "@/components/EnhancedWelcomeSystem";
-import Footer from '@/components/Footer';
-import Header from '@/components/Header';
-import HealthLinkInvestorPitch from "@/components/HealthLinkInvestorPitch";
-import ParticleBackground from "@/components/ParticleBackground";
-import TourGuideProvider from "@/components/TourGuideProvider";
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
-import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  Brain,
-  Building2,
-  Cpu,
-  Database,
-  Network,
-  Shield,
-  Star,
-  Users
-} from 'lucide-react';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-
-const INDUSTRY_COPY: Record<string, { title: string; tagline: string; points: string[] }> = {
-  healthcare: {
-    title: "AI-Powered Care Transformation",
-    tagline: "Unify patient data, unlock proactive insights.",
-    points: [
-      "Secure FHIR interoperability",
-      "Personal AI health assistant",
-      "Automation of tedious workflows"
-    ]
-  },
-  defense: {
-    title: "Mission-Critical Intelligence",
-    tagline: "Real-time multi-model analytics for defense operations.",
-    points: [
-      "Cross-domain data fusion",
-      "Autonomous threat detection",
-      "Secure multi-model orchestration"
-    ]
-  },
-  finance: {
-    title: "Next-Gen Financial AI",
-    tagline: "Transform risk analysis and customer engagement.",
-    points: [
-      "Automated compliance checks",
-      "Generative reporting",
-      "Fraud prediction models"
-    ]
-  }
-};
-
-interface WelcomeInsights {
-  startTime: Date;
-  interactions: number;
-  stepsCompleted: number;
-  completionRate: number;
-  satisfactionScore?: number;
-  featureDiscovery: string[];
-  conversionEvents: string[];
-}
-
-export default function LandingPage() {
-  const [industry, setIndustry] = useState<string | null>(null);
-  const [firstTime, setFirstTime] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const qsIndustry = params.get("industry");
-      const stored = localStorage.getItem("preferredIndustry");
-      const ind = qsIndustry || stored || "healthcare";
-      if (qsIndustry) localStorage.setItem("preferredIndustry", qsIndustry);
-      setIndustry(ind);
-
-      // Check if enhanced welcome has been completed
-      const hasCompletedEnhanced = localStorage.getItem("enhancedWelcomeCompleted");
-      if (!hasCompletedEnhanced) {
-        setFirstTime(true);
-      }
-    }
-  }, []);
-
-  const copy = INDUSTRY_COPY[industry as keyof typeof INDUSTRY_COPY] || INDUSTRY_COPY.healthcare;
-
-  const handleWelcomeComplete = (insights: WelcomeInsights) => {
-    if (typeof window !== 'undefined') {
-      console.log('Welcome completed with insights:', insights);
-      setFirstTime(false);
-
-      // Track completion analytics
-      fetch('/api/analytics/welcome-completion', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          insights,
-          industry,
-          timestamp: new Date().toISOString()
-        })
-      }).catch((error) => {
-        console.error('Failed to track welcome completion:', error);
-      });
-    }
-  };
-
-  const handleWelcomeDismiss = () => {
-    setFirstTime(false);
-    if (typeof window !== 'undefined') {
-      console.log('Welcome dismissed');
-    }
-  };
-
+export default function HomePage() {
   return (
-    <TourGuideProvider>
-      {firstTime && (
-        <EnhancedWelcomeSystem
-          onComplete={handleWelcomeComplete}
-          onDismiss={handleWelcomeDismiss}
-          userRole="professional"
-          industry={industry || "healthcare"}
-          isFirstVisit={true}
-          analyticsEnabled={true}
-        />
-      )}
+    <div className="min-h-screen bg-gradient-to-br from-[#F5F7FA] to-white">
+      <Navbar />
 
-      <div className="min-h-screen bg-slate-950 text-white">
-        <Header />
-
-        {/* HERO */}
-        <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 py-24 overflow-hidden">
-          {/* Quantum Background */}
-          <div className="absolute inset-0 z-0">
-            <ParticleBackground />
+      {/* Hero Section */}
+      <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <Badge className="mb-6 bg-[#2E8B57] text-white hover:bg-[#2E8B57]/90">
+            Revolutionary Genomic Digital Twin Technology
+          </Badge>
+          <h1 className="text-4xl sm:text-6xl font-bold text-[#4A4A4A] mb-6 leading-tight">
+            Create Your <span className="text-[#1E90FF]">Genomic Twin</span>
+            <br />
+            <span className="text-[#DC143C]">Personalized Medicine Platform</span>
+          </h1>
+          <p className="text-xl text-[#4A4A4A]/80 mb-8 max-w-3xl mx-auto">
+            Unlock personalized health insights with our AI-powered Genomic Twin Builder. Create a digital
+            representation of your genetic profile for precision medicine, risk prediction, and personalized treatment
+            optimization.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/register">
+              <Button size="lg" className="bg-[#1E90FF] hover:bg-[#1E90FF]/90 text-white px-8 py-3">
+                Build Your Genomic Twin
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/clinical-demo">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-[#1E90FF] text-[#1E90FF] hover:bg-[#1E90FF]/10 px-8 py-3 bg-transparent"
+              >
+                View Clinical Demo
+              </Button>
+            </Link>
           </div>
-          <video
-            className="absolute inset-0 w-full h-full object-cover opacity-10" autoPlay loop muted playsInline
-            src="/hero-healthlink.mp4" onError={(e) => { (e.currentTarget as HTMLVideoElement).style.display = 'none'; }}
-          />
-          <div className="relative z-10 max-w-4xl mx-auto">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent"
-            >
-              {(copy && copy.title) ? copy.title : "IRIS-AI Enterprise, Defense, Legal, Healthcare Platform Powered by the IRIS MCP SDK"}
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="mt-6 text-lg md:text-2xl text-gray-300"
-            >
-              {(copy && copy.tagline) ? copy.tagline : "The industry-leading multi-modal AI orchestration platform for enterprise, defense, legal, and healthcare."}
-            </motion.p>
-            <motion.ul
-              initial="hidden" animate="visible"
-              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.2 } } }}
-              className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 text-left"
-            >
-              {(copy?.points && Array.isArray(copy.points)) ? (
-                copy.points.map(p => (
-                  <motion.li
-                    key={p}
-                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-                    className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-gray-200"
-                  >
-                    {p}
-                  </motion.li>
-                ))
-              ) : (
-                <>
-                  <motion.li
-                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-                    className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-gray-200"
-                  >
-                    Quantum-enhanced analytics, neural model fusion, and adaptive learning for enterprise.
-                  </motion.li>
-                  <motion.li
-                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-                    className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-gray-200"
-                  >
-                    Industry-leading security, compliance, and real-time performance monitoring.
-                  </motion.li>
-                  <motion.li
-                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-                    className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-gray-200"
-                  >
-                    Tailored AI solutions for healthcare, defense, and legal operations.
-                  </motion.li>
-                </>
-              )}
-            </motion.ul>
-          </div>
-        </section>
+        </div>
+      </section>
 
-        {/* INDUSTRY SECTION */}
-        <section id="industry-section" className="py-24 px-6 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800">
-          <div className="max-w-5xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-4">
-              Tailored AI Solutions
-            </h2>
-            <p className="text-gray-300 max-w-2xl mx-auto">
-              We auto-detect your industry to surface the most relevant AI demos and case studies.
+      {/* Article Content */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <article className="prose prose-lg max-w-none">
+            <header className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-[#4A4A4A] mb-4">
+                The Future of Personalized Medicine: How Genomic Digital Twin Technology is Transforming Healthcare
+              </h2>
+              <p className="text-[#4A4A4A]/70 text-lg">
+                Exploring the revolutionary impact of AI-powered genomic twins on precision medicine, drug discovery,
+                and personalized treatment optimization.
+              </p>
+            </header>
+
+            <div className="text-[#4A4A4A] space-y-6">
+              <p className="text-lg leading-relaxed">
+                In an era where <strong>Precision Medicine</strong> is becoming the gold standard of healthcare, the
+                emergence of <strong>Genomic Digital Twin</strong> technology represents a paradigm shift in how we
+                approach personalized treatment. The concept of creating an
+                <strong>AI-Powered Genomic Twin</strong> that can authentically simulate an individual's genetic
+                responses, drug interactions, and disease susceptibilities is no longer theoretical—it's the
+                cutting-edge reality that platforms like Genomic Twin are bringing to healthcare providers, researchers,
+                and patients worldwide.
+              </p>
+
+              <h3 className="text-2xl font-semibold text-[#1E90FF] mt-8 mb-4">
+                1. Advanced Genomic Profile Analyzer: Beyond Traditional Genetic Testing
+              </h3>
+
+              <p>
+                The first transformative aspect of modern <strong>Genomic Twin Builder</strong> technology lies in its
+                sophisticated <strong>Genomic Profile Analyzer</strong> capabilities. Unlike traditional
+                <strong>Genetic Testing Services</strong> that provide static reports, advanced
+                <strong>AI Genomic Analysis</strong> systems process thousands of genetic variants to create a truly
+                dynamic health simulation.
+              </p>
+
+              <p>
+                This <strong>Genetic Risk Predictor</strong> technology goes far beyond surface-level SNP analysis. It
+                examines polygenic risk scores, pharmacogenomic interactions, rare variant impacts, and epigenetic
+                factors that make each individual's health profile unique. The result is a
+                <strong>Personalized Health Simulation</strong> system that can predict disease susceptibility and
+                treatment responses with unprecedented accuracy, making it an invaluable
+                <strong>Clinical Decision Support</strong> tool for healthcare professionals.
+              </p>
+
+              <h3 className="text-2xl font-semibold text-[#1E90FF] mt-8 mb-4">
+                2. HIPAA-Compliant Data Integration and Privacy-First Architecture
+              </h3>
+
+              <p>
+                The second revolutionary feature of modern <strong>Healthcare SaaS Platform</strong> solutions is their
+                ability to seamlessly integrate with multiple healthcare data sources while maintaining the highest
+                standards of <strong>HIPAA Compliance</strong> and patient privacy protection. Advanced
+                <strong>Healthcare Data Integration</strong> technology can analyze genomic data from sequencing
+                platforms, electronic health records, and wearable devices to build a comprehensive understanding of the
+                patient's health profile.
+              </p>
+
+              <p>
+                What sets leading platforms apart is their commitment to <strong>Healthcare Data Security</strong>
+                practices. Patients maintain complete control over their genetic data, with transparent processing
+                methods and the ability to modify or delete their genomic twin at any time. This
+                <strong>Genetic Privacy Protection</strong> approach ensures that while the AI learns from patient data,
+                privacy and security remain paramount concerns in the platform's architecture.
+              </p>
+
+              <h3 className="text-2xl font-semibold text-[#1E90FF] mt-8 mb-4">
+                3. Real-time Health Simulations with Continuous Learning
+              </h3>
+
+              <p>
+                The third game-changing aspect of contemporary <strong>AI Healthcare Platform</strong> solutions is
+                their implementation of real-time health simulations and continuous learning systems. The innovative
+                <strong>Health Simulation Engine</strong> allows healthcare providers to model treatment outcomes,
+                predict drug responses, and assess disease risks in real-time.
+              </p>
+
+              <p>
+                This <strong>Personalized Medicine AI</strong> functionality transforms the platform from a simple
+                genetic analysis tool into a comprehensive <strong>Clinical Decision Support System</strong>. Healthcare
+                providers can simulate treatment scenarios, receive <strong>Drug Response Predictions</strong>, and even
+                use the genomic twin as a research tool for clinical trials. The
+                <strong>Continuous Health Monitoring</strong> capabilities ensure that the genomic twin becomes more
+                accurate and helpful as new genetic research emerges and patient data is updated.
+              </p>
+
+              <h3 className="text-2xl font-semibold text-[#DC143C] mt-8 mb-4">
+                Conclusion: The Dawn of Truly Personalized Healthcare
+              </h3>
+
+              <p>
+                As we stand at the threshold of a new era in precision medicine, <strong>Genomic Digital Twin</strong>
+                technology represents more than just another advancement in healthcare AI—it signifies a fundamental
+                shift toward truly personalized medicine. The convergence of sophisticated
+                <strong>AI Genomic Analysis</strong>, robust privacy protection, and real-time health simulations
+                creates unprecedented opportunities for healthcare providers to deliver precision care tailored to each
+                patient's unique genetic profile.
+              </p>
+
+              <p>
+                The implications extend far beyond individual patient care. As <strong>Healthcare AI SaaS</strong>
+                platforms continue to evolve, we're witnessing the emergence of{" "}
+                <strong>Population Health Genomics</strong>
+                technology that could revolutionize drug discovery, clinical trial design, and public health strategies.
+                The question isn't whether <strong>AI-Powered Precision Medicine</strong> will transform healthcare—it's
+                how quickly we'll adapt to a world where every treatment decision is informed by comprehensive genomic
+                simulations.
+              </p>
+
+              <p className="text-lg font-medium text-[#1E90FF] mt-8">
+                The future of medicine is not just personalized—it's genomically precise, ethically sound, and
+                scientifically revolutionary.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#F5F7FA]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[#4A4A4A] mb-4">Powerful Features for Your AI Digital Twin</h2>
+            <p className="text-[#4A4A4A]/70 text-lg max-w-2xl mx-auto">
+              Everything you need to create, customize, and deploy your personalized AI assistant
             </p>
-            <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-              {Object.entries(INDUSTRY_COPY).map(([key, val]) => (
-                <div key={key} className={`rounded-2xl p-6 border hover:shadow-xl transition cursor-pointer ${industry === key ? 'border-blue-500' : 'border-white/10'}`} onClick={() => setIndustry(key)} aria-label={`Select ${key}`}>
-                  <h3 className="text-xl font-semibold text-white mb-2">{val.title}</h3>
-                  <p className="text-sm text-gray-400">{val.tagline}</p>
-                </div>
-              ))}
-            </div>
           </div>
-        </section>
 
-        {/* INVESTOR SPOTLIGHT */}
-        <section id="investor-spotlight" className="py-24 px-6 bg-slate-900">
-          <HealthLinkInvestorPitch />
-        </section>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <CardHeader>
+                <Brain className="h-12 w-12 text-[#1E90FF] mb-4" />
+                <CardTitle className="text-[#4A4A4A]">Genomic Profile Analyzer</CardTitle>
+                <CardDescription>
+                  Advanced AI algorithms analyze your genetic variants, SNPs, and genomic data for comprehensive health
+                  insights
+                </CardDescription>
+              </CardHeader>
+            </Card>
 
-        {/* Social Proof */}
-        <section className="py-16 px-4 bg-slate-900/30">
-          <div className="max-w-7xl mx-auto text-center">
-            <p className="text-slate-400 mb-8">Trusted by leading organizations</p>
-            <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-              <div className="text-slate-500 font-semibold">USACE</div>
-              <div className="text-slate-500 font-semibold">Epic Systems</div>
-              <div className="text-slate-500 font-semibold">Redox</div>
-              <div className="text-slate-500 font-semibold">OpenAI</div>
-              <div className="text-slate-500 font-semibold">Federal Contractors</div>
-            </div>
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <CardHeader>
+                <Zap className="h-12 w-12 text-[#DC143C] mb-4" />
+                <CardTitle className="text-[#4A4A4A]">Real-time Health Simulations</CardTitle>
+                <CardDescription>
+                  Generate personalized health predictions and treatment response simulations based on your genetic
+                  profile
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <CardHeader>
+                <Shield className="h-12 w-12 text-[#2E8B57] mb-4" />
+                <CardTitle className="text-[#4A4A4A]">HIPAA Compliant Security</CardTitle>
+                <CardDescription>
+                  Your genetic data is protected with healthcare-grade security and full HIPAA compliance
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <CardHeader>
+                <Globe className="h-12 w-12 text-[#1E90FF] mb-4" />
+                <CardTitle className="text-[#4A4A4A]">Healthcare Integration</CardTitle>
+                <CardDescription>
+                  Seamlessly integrate with EHRs, genetic testing platforms, and wearable health devices
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <CardHeader>
+                <Users className="h-12 w-12 text-[#DC143C] mb-4" />
+                <CardTitle className="text-[#4A4A4A]">Clinical Collaboration</CardTitle>
+                <CardDescription>
+                  Share genomic insights securely with healthcare providers and research teams
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <CardHeader>
+                <Sparkles className="h-12 w-12 text-[#2E8B57] mb-4" />
+                <CardTitle className="text-[#4A4A4A]">Continuous Research Updates</CardTitle>
+                <CardDescription>
+                  Your genomic twin evolves with the latest genetic research and clinical findings
+                </CardDescription>
+              </CardHeader>
+            </Card>
           </div>
-        </section>
-
-        {/* Solutions Overview */}
-        <section className="py-20 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">Enterprise AI Solutions</h2>
-              <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                Comprehensive AI platforms designed for mission-critical operations across defense, healthcare, and cybersecurity sectors.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <SolutionCard
-                icon={<Cpu className="w-8 h-8 text-blue-400" />}
-                title="AI-Driven Engineering"
-                description="Leverage AI for advanced engineering workflows, optimizing performance and reduced costs."
-                features={["Genomics", "Predictive Maintenance", "Autonomy"]}
-                href="/solutions#ai-engineering"
-              />
-              <SolutionCard
-                icon={<Shield className="w-8 h-8 text-blue-400" />}
-                title="Defense Contract Intelligence"
-                description="Automate RFP analysis and bid scoring to boost win rates by up to 30%."
-                features={["Auto RFP Analysis", "Bid Scoring", "SAM.gov Integration"]}
-                href="/solutions#defense-contract"
-              />
-              <SolutionCard
-                icon={<Building2 className="w-8 h-8 text-blue-400" />}
-                title="Healthcare Automation"
-                description="Streamline clinical operations with FHIR and Redox integrations."
-                features={["FHIR Integration", "Redox", "Clinical Workflows"]}
-                href="/solutions#healthcare"
-              />
-              <SolutionCard
-                icon={<Users className="w-8 h-8 text-blue-400" />}
-                title="Cybersecurity & Red Team"
-                description="Execute automated phishing simulations and C2 frameworks."
-                features={["Phishing Sim", "C2 Frameworks", "Pentest Automation"]}
-                href="/solutions#cybersecurity"
-              />
-            </div>
-
-            {/* Project Spectra Highlight */}
-            <div className="mt-20 text-center">
-              <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-2xl p-8 border border-amber-500/20">
-                <h3 className="text-2xl font-bold text-amber-300 mb-4">Project Spectra</h3>
-                <p className="text-slate-300 mb-6 max-w-2xl mx-auto">
-                  Explore the weapons hypothesis through interactive 3D visualization, physics simulation, and materials analysis.
-                </p>
-                <Link href="/project-spectra">
-                  <Button className="bg-amber-500 hover:bg-amber-600 text-black">
-                    Explore Project Spectra
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Use Cases */}
-        <section className="py-20 px-4 bg-slate-900">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">Real-World Applications</h2>
-              <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                See how our AI solutions are transforming industries and solving complex challenges.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <UseCaseCard
-                icon={<Brain className="w-8 h-8 text-green-400" />}
-                title="Clinical Decision Support"
-                description="AI-powered diagnostic assistance and treatment recommendations for healthcare providers."
-              />
-              <UseCaseCard
-                icon={<Network className="w-8 h-8 text-blue-400" />}
-                title="Threat Intelligence"
-                description="Real-time threat detection and analysis for defense and cybersecurity operations."
-              />
-              <UseCaseCard
-                icon={<Database className="w-8 h-8 text-purple-400" />}
-                title="Data Integration"
-                description="Seamless integration of disparate data sources for comprehensive analytics."
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials */}
-        <section className="py-20 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">What Our Clients Say</h2>
-              <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-                Hear from professionals who have transformed their operations with our AI solutions.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <TestimonialCard
-                quote="The AI platform has revolutionized our patient care workflow, reducing administrative burden by 40%."
-                author="Dr. Sarah Johnson"
-                title="Chief Medical Officer"
-                rating={5}
-              />
-              <TestimonialCard
-                quote="Real-time threat detection capabilities have significantly enhanced our security posture."
-                author="Michael Chen"
-                title="Security Director"
-                rating={5}
-              />
-              <TestimonialCard
-                quote="The automation features have streamlined our compliance processes and reduced errors."
-                author="Lisa Rodriguez"
-                title="Compliance Manager"
-                rating={5}
-              />
-            </div>
-          </div>
-        </section>
-
-        <Footer />
-      </div>
-    </TourGuideProvider>
-  );
-}
-
-function SolutionCard({ icon, title, description, features, href }: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  features: string[];
-  href: string;
-}) {
-  return (
-    <Card className="bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10 transition-all duration-300 group">
-      <CardHeader>
-        <div className="flex items-center gap-3 mb-4">
-          {icon}
-          <h3 className="text-xl font-semibold text-white group-hover:text-blue-400 transition-colors">
-            {title}
-          </h3>
         </div>
-        <CardDescription className="text-gray-300">
-          {description}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          <div className="flex flex-wrap gap-2">
-            {features.map((feature, index) => (
-              <Badge key={index} variant="secondary" className="text-xs">
-                {feature}
-              </Badge>
-            ))}
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[#1E90FF] to-[#DC143C]">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-white mb-4">Ready to Build Your Genomic Digital Twin?</h2>
+          <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
+            Join leading healthcare providers and researchers who are already using Genomic Twin to revolutionize
+            personalized medicine and precision healthcare.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/register">
+              <Button size="lg" className="bg-white text-[#1E90FF] hover:bg-white/90 px-8 py-3">
+                Start Clinical Trial
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/pricing">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-white text-white hover:bg-white/10 px-8 py-3 bg-transparent"
+              >
+                View Healthcare Plans
+              </Button>
+            </Link>
           </div>
-          <Link href={href}>
-            <Button variant="outline" size="sm" className="w-full mt-4">
-              Learn More
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
         </div>
-      </CardContent>
-    </Card>
-  );
-}
+      </section>
 
-function UseCaseCard({ icon, title, description }: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}) {
-  return (
-    <Card className="bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10 transition-all duration-300">
-      <CardHeader>
-        <div className="flex items-center gap-3 mb-4">
-          {icon}
-          <h3 className="text-xl font-semibold text-white">{title}</h3>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-gray-300">{description}</p>
-      </CardContent>
-    </Card>
-  );
-}
-
-function TestimonialCard({ quote, author, title, rating }: {
-  quote: string;
-  author: string;
-  title: string;
-  rating: number;
-}) {
-  return (
-    <Card className="bg-white/5 backdrop-blur-sm border-white/10">
-      <CardContent className="p-6">
-        <div className="flex items-center gap-1 mb-4">
-          {Array.from({ length: rating }, (_, i) => (
-            <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-          ))}
-        </div>
-        <blockquote className="text-gray-300 mb-4 italic">
-          "{quote}"
-        </blockquote>
-        <div className="text-sm">
-          <div className="font-semibold text-white">{author}</div>
-          <div className="text-gray-400">{title}</div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+      <Footer />
+    </div>
+  )
 }

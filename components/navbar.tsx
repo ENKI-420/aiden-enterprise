@@ -1,105 +1,103 @@
-'use client';
+"use client"
 
-import { ThemeToggle } from '@/components/theme-toggle';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Zap } from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
+import { useState } from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Menu, X, Brain } from "lucide-react"
 
-export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const navItems = [
-    { label: 'Capabilities', href: '#capabilities' },
-    { label: 'Use Cases', href: '#use-cases' },
-    { label: 'Testimonials', href: '#testimonials' },
-    { label: 'Contact', href: '#contact' },
-    { label: 'Immersive', href: '/immersive' },
-    { label: 'Project Spectra', href: '/project-spectra', highlight: true },
-  ];
+export function Navbar() {
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <header className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-md'>
-      <div className='container flex h-16 items-center justify-between'>
-        <div className='flex items-center gap-2'>
-          <Link
-            href='/'
-            className='flex items-center space-x-2'
-            aria-label='Agile Defense Systems Homepage'
-          >
-            <span className='text-2xl font-bold tracking-tight text-primary'>Agile Defense</span>
-            <span className='text-sm font-medium text-muted-foreground'>AIDEN Enterprise</span>
+    <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-[#F5F7FA] z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <Link href="/" className="flex items-center space-x-2">
+            <Brain className="h-8 w-8 text-[#1E90FF]" />
+            <span className="text-xl font-bold text-[#4A4A4A]">Genomic Twin</span>
           </Link>
-        </div>
 
-        <nav className='hidden md:flex gap-6' aria-label='Main Navigation'>
-          {navItems.map((item, index) => (
-            <Link
-              key={index}
-              href={item.href}
-              className={`text-sm font-medium transition-colors hover:text-primary ${item.highlight ? 'px-3 py-1 rounded bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 text-white font-bold shadow-lg' : ''}`}
-            >
-              {item.label}
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <Link href="/clinical-features" className="text-[#4A4A4A] hover:text-[#1E90FF] transition-colors">
+              Clinical Features
             </Link>
-          ))}
-        </nav>
-
-        <div className='flex items-center gap-4'>
-          <ThemeToggle />
-
-          <Button
-            asChild
-            className='hidden md:flex items-center gap-3 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-xl border-0 h-auto shadow-[0_0_10px_rgba(36,101,237,0.4)]'
-          >
-            <Link href='#contact'>
-              <Zap className='h-4 w-4 text-white' />
-              <div className='flex flex-col items-start'>
-                <span className='text-sm font-semibold'>Request Demo</span>
-                <span className='text-xs text-gray-300 -mt-0.5'>AIDEN v1.0.0</span>
-              </div>
+            <Link href="/healthcare-pricing" className="text-[#4A4A4A] hover:text-[#1E90FF] transition-colors">
+              Healthcare Plans
             </Link>
-          </Button>
+            <Link href="/research" className="text-[#4A4A4A] hover:text-[#1E90FF] transition-colors">
+              Research
+            </Link>
+            <Link href="/contact" className="text-[#4A4A4A] hover:text-[#1E90FF] transition-colors">
+              Contact
+            </Link>
+          </div>
 
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild className='md:hidden'>
-              <Button variant='outline' size='icon' aria-label='Open Menu'>
-                <Menu className='h-5 w-5' />
-                <span className='sr-only'>Toggle menu</span>
+          <div className="hidden md:flex items-center space-x-4">
+            <Link href="/login">
+              <Button variant="ghost" className="text-[#4A4A4A] hover:text-[#1E90FF]">
+                Provider Login
               </Button>
-            </SheetTrigger>
-            <SheetContent side='right'>
-              <nav className='flex flex-col gap-4 mt-8' aria-label='Mobile Navigation'>
-                {navItems.map((item, index) => (
-                  <Link
-                    key={index}
-                    href={item.href}
-                    className={`text-lg font-medium transition-colors hover:text-primary ${item.highlight ? 'px-3 py-1 rounded bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 text-white font-bold shadow-lg' : ''}`}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-                <div className='flex items-center gap-4 mt-4'>
-                  <ThemeToggle />
-                  <Button
-                    asChild
-                    className='w-full flex items-center gap-3 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-xl border-0 h-auto shadow-[0_0_10px_rgba(36,101,237,0.4)]'
-                  >
-                    <Link href='#contact' onClick={() => setIsOpen(false)}>
-                      <Zap className='h-4 w-4 text-white' />
-                      <div className='flex flex-col items-start'>
-                        <span className='text-sm font-semibold'>Request Demo</span>
-                        <span className='text-xs text-gray-300 -mt-0.5'>AIDEN v1.0.0</span>
-                      </div>
-                    </Link>
-                  </Button>
-                </div>
-              </nav>
-            </SheetContent>
-          </Sheet>
+            </Link>
+            <Link href="/register">
+              <Button className="bg-[#1E90FF] hover:bg-[#1E90FF]/90 text-white">Start Trial</Button>
+            </Link>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <Button variant="ghost" size="sm" onClick={() => setIsOpen(!isOpen)} className="text-[#4A4A4A]">
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-[#F5F7FA]">
+              <Link
+                href="/clinical-features"
+                className="block px-3 py-2 text-[#4A4A4A] hover:text-[#1E90FF] transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Clinical Features
+              </Link>
+              <Link
+                href="/healthcare-pricing"
+                className="block px-3 py-2 text-[#4A4A4A] hover:text-[#1E90FF] transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Healthcare Plans
+              </Link>
+              <Link
+                href="/research"
+                className="block px-3 py-2 text-[#4A4A4A] hover:text-[#1E90FF] transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Research
+              </Link>
+              <Link
+                href="/contact"
+                className="block px-3 py-2 text-[#4A4A4A] hover:text-[#1E90FF] transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Contact
+              </Link>
+              <div className="pt-4 space-y-2">
+                <Link href="/login" onClick={() => setIsOpen(false)}>
+                  <Button variant="ghost" className="w-full text-[#4A4A4A] hover:text-[#1E90FF]">
+                    Provider Login
+                  </Button>
+                </Link>
+                <Link href="/register" onClick={() => setIsOpen(false)}>
+                  <Button className="w-full bg-[#1E90FF] hover:bg-[#1E90FF]/90 text-white">Start Trial</Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </header>
-  );
+    </nav>
+  )
 }
