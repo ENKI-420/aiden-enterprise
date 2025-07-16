@@ -1,242 +1,285 @@
 "use client"
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
+import { useState, useEffect, useCallback } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Pill } from "lucide-react"
+import { Label } from "@/components/ui/label"
+import { Slider } from "@/components/ui/slider"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
+import { FlaskConical, Clock, BarChart2, Calculator } from "lucide-react"
 
 interface PKParameters {
   dose: number // mg
-  volumeOfDistribution: number // L
-  eliminationRateConstant: number // 1/hr
-  absorptionRateConstant: number // 1/hr (for oral administration)
-  bioavailability: number // fraction (0-1)
+  administrationRoute: "oral" | "iv" | "subcutaneous" | "intramuscular"
+  absorptionRate: number // 1/hr (ka)
+  distributionVolume: number // L (Vd)
+  eliminationRate: number // 1/hr (ke)
+  bioavailability: number // fraction (F)
+  clearance: number // L/hr (CL)
+  halfLife: number // hr (t1/2)
 }
 
-interface PKDataPoint {
-  time: number // hours
+interface PKSimulationResult {
+  time: number // hr
   concentration: number // mg/L
 }
 
-// Function to simulate single-dose oral administration (one-compartment model)
-const simulateOralPK = (params: PKParameters, timePoints: number[]): PKDataPoint[] => {
-  const { dose, volumeOfDistribution, eliminationRateConstant, absorptionRateConstant, bioavailability } = params
-  const data: PKDataPoint[] = []
-
-  if (absorptionRateConstant <= 0 || eliminationRateConstant <= 0 || volumeOfDistribution <= 0) {
-    return [] // Avoid division by zero or invalid parameters
-  }
-
-  const F_D_Vd = (bioavailability * dose) / volumeOfDistribution
-
-  for (const t of timePoints) {
-    if (t < 0) {
-      data.push({ time: t, concentration: 0 })
-      continue
-    }
-    let concentration = 0
-    if (absorptionRateConstant !== eliminationRateConstant) {
-      concentration =
-        ((F_D_Vd * absorptionRateConstant) / (absorptionRateConstant - eliminationRateConstant)) *
-        (Math.exp(-eliminationRateConstant * t) - Math.exp(-absorptionRateConstant * t))
-    } else {
-      // Handle the special case where Ka = Ke (though rare in practice)
-      concentration = F_D_Vd * absorptionRateConstant * t * Math.exp(-eliminationRateConstant * t)
-    }
-    data.push({ time: t, concentration: Math.max(0, concentration) }) // Concentration cannot be negative
-  }
-  return data
+interface PharmacokineticModelingProps {
+  drugName: string
+  initialParameters?: Partial<PKParameters>
 }
 
-export function PharmacokineticModelingInterface() {
-  const [parameters, setParameters] = useState<PKParameters>({
-    dose: 100,
-    volumeOfDistribution: 10,
-    eliminationRateConstant: 0.1,
-    absorptionRateConstant: 0.5,
-    bioavailability: 1.0,
+export function PharmacokineticModelingInterface({ drugName, initialParameters = {} }: PharmacokineticModelingProps) {
+  const [pkParameters, setPkParameters] = useState<PKParameters>({
+    dose: initialParameters.dose || 100,
+    administrationRoute: initialParameters.administrationRoute || "oral",
+    absorptionRate: initialParameters.absorptionRate || 0.5, // ka
+    distributionVolume: initialParameters.distributionVolume || 10, // Vd
+    eliminationRate: initialParameters.eliminationRate || 0.1, // ke
+    bioavailability: initialParameters.bioavailability || 0.8, // F
+    clearance: initialParameters.clearance || 1, // L/hr (calculated if not provided)
+    halfLife: initialParameters.halfLife || 6.93, // hr (calculated if not provided)
   })
-  const [pkData, setPkData] = useState<PKDataPoint[]>([])
-  const [timeHorizon, setTimeHorizon] = useState(24) // hours
+  const [simulationResults, setSimulationResults] = useState<PKSimulationResult[]>([])
+  const [simulationDuration, setSimulationDuration] = useState([24]) // hours
+  const [selectedModel, setSelectedModel] = useState<"one-compartment" | "two-compartment">("one-compartment")
 
-  const timePoints = Array.from({ length: timeHorizon * 10 + 1 }, (_, i) => i * 0.1)
+  // Recalculate clearance and half-life based on Vd and ke
+  useEffect(() => {
+    const newClearance = pkParameters.eliminationRate * pkParameters.distributionVolume
+    const newHalfLife = Math.log(2) / pkParameters.eliminationRate
+    setPkParameters((prev) => ({
+      ...prev,
+      clearance: Number.parseFloat(newClearance.toFixed(2)),
+      halfLife: Number.parseFloat(newHalfLife.toFixed(2)),
+    }))
+  }, [pkParameters.eliminationRate, pkParameters.distributionVolume])
+
+  const simulatePK = useCallback(() => {
+    const results: PKSimulationResult[] = []
+    const { dose, administrationRoute, absorptionRate, distributionVolume, eliminationRate, bioavailability } =
+      pkParameters
+    const duration = simulationDuration[0]
+    const timeStep = 0.1 // hours
+
+    if (selectedModel === "one-compartment") {
+      // Oral administration (first-order absorption)
+      if (administrationRoute === "oral") {
+        for (let t = 0; t <= duration; t += timeStep) {
+          const concentration =
+            ((dose * bioavailability * absorptionRate) / (distributionVolume * (absorptionRate - eliminationRate))) *
+            (Math.exp(-eliminationRate * t) - Math.exp(-absorptionRate * t))
+          results.push({
+            time: Number.parseFloat(t.toFixed(1)),
+            concentration: Math.max(0, Number.parseFloat(concentration.toFixed(2))),
+          })
+        }
+      } else {
+        // IV administration (instantaneous absorption)
+        for (let t = 0; t <= duration; t += timeStep) {
+          const concentration = (dose / distributionVolume) * Math.exp(-eliminationRate * t)
+          results.push({
+            time: Number.parseFloat(t.toFixed(1)),
+            concentration: Math.max(0, Number.parseFloat(concentration.toFixed(2))),
+          })
+        }
+      }
+    }
+    // Two-compartment model simulation would go here
+    // For simplicity, we'll just use the one-compartment for now.
+
+    setSimulationResults(results)
+  }, [pkParameters, simulationDuration, selectedModel])
 
   useEffect(() => {
-    const data = simulateOralPK(parameters, timePoints)
-    setPkData(data)
-  }, [parameters, timeHorizon]) // Re-simulate when parameters or time horizon change
+    simulatePK()
+  }, [simulatePK])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target
-    setParameters((prev) => ({
+  const handleParameterChange = (param: keyof PKParameters, value: string | number) => {
+    setPkParameters((prev) => ({
       ...prev,
-      [name]: type === "number" ? Number.parseFloat(value) : value,
+      [param]: typeof value === "string" ? Number.parseFloat(value) : value,
     }))
-  }
-
-  const handleTimeHorizonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTimeHorizon(Number.parseFloat(e.target.value))
   }
 
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Pill className="h-5 w-5 text-[#1E90FF]" />
-          Pharmacokinetic Modeling
+          <FlaskConical className="h-5 w-5 text-[#FF8C00]" />
+          Pharmacokinetic Modeling: {drugName}
         </CardTitle>
-        <CardDescription>
-          Simulate drug absorption, distribution, metabolism, and excretion (ADME) processes.
-        </CardDescription>
+        <CardDescription>Simulate drug absorption, distribution, metabolism, and excretion (ADME).</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div>
-            <Label htmlFor="dose">Dose (mg)</Label>
-            <Input
-              id="dose"
-              name="dose"
-              type="number"
-              value={parameters.dose}
-              onChange={handleChange}
-              min="0"
-              step="1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="volumeOfDistribution">Volume of Distribution (L)</Label>
-            <Input
-              id="volumeOfDistribution"
-              name="volumeOfDistribution"
-              type="number"
-              value={parameters.volumeOfDistribution}
-              onChange={handleChange}
-              min="0.1"
-              step="0.1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="eliminationRateConstant">Elimination Rate Constant (1/hr)</Label>
-            <Input
-              id="eliminationRateConstant"
-              name="eliminationRateConstant"
-              type="number"
-              value={parameters.eliminationRateConstant}
-              onChange={handleChange}
-              min="0.001"
-              step="0.001"
-            />
-          </div>
-          <div>
-            <Label htmlFor="absorptionRateConstant">Absorption Rate Constant (1/hr)</Label>
-            <Input
-              id="absorptionRateConstant"
-              name="absorptionRateConstant"
-              type="number"
-              value={parameters.absorptionRateConstant}
-              onChange={handleChange}
-              min="0.001"
-              step="0.001"
-            />
-          </div>
-          <div>
-            <Label htmlFor="bioavailability">Bioavailability (0-1)</Label>
-            <Input
-              id="bioavailability"
-              name="bioavailability"
-              type="number"
-              value={parameters.bioavailability}
-              onChange={handleChange}
-              min="0"
-              max="1"
-              step="0.01"
-            />
-          </div>
-          <div>
-            <Label htmlFor="timeHorizon">Time Horizon (hours)</Label>
-            <Input
-              id="timeHorizon"
-              name="timeHorizon"
-              type="number"
-              value={timeHorizon}
-              onChange={handleTimeHorizonChange}
-              min="1"
-              step="1"
-            />
-          </div>
-        </div>
+        <Tabs value={selectedModel} onValueChange={(value: any) => setSelectedModel(value)}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="one-compartment">One-Compartment Model</TabsTrigger>
+            <TabsTrigger value="two-compartment" disabled>
+              Two-Compartment Model (Coming Soon)
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="one-compartment" className="mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="dose">Dose (mg)</Label>
+                <Input
+                  id="dose"
+                  type="number"
+                  value={pkParameters.dose}
+                  onChange={(e) => handleParameterChange("dose", e.target.value)}
+                  min="1"
+                  step="1"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="route">Administration Route</Label>
+                <Select
+                  value={pkParameters.administrationRoute}
+                  onValueChange={(value: any) => handleParameterChange("administrationRoute", value)}
+                >
+                  <SelectTrigger id="route">
+                    <SelectValue placeholder="Select route" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="oral">Oral</SelectItem>
+                    <SelectItem value="iv">Intravenous (IV)</SelectItem>
+                    <SelectItem value="subcutaneous">Subcutaneous</SelectItem>
+                    <SelectItem value="intramuscular">Intramuscular</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {pkParameters.administrationRoute === "oral" && (
+                <div className="space-y-2">
+                  <Label htmlFor="absorption-rate">Absorption Rate (ka, 1/hr)</Label>
+                  <Slider
+                    id="absorption-rate"
+                    min={0.01}
+                    max={2}
+                    step={0.01}
+                    value={[pkParameters.absorptionRate]}
+                    onValueChange={([value]) => handleParameterChange("absorptionRate", value)}
+                  />
+                  <div className="text-xs text-center">{pkParameters.absorptionRate.toFixed(2)}</div>
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="distribution-volume">Volume of Distribution (Vd, L)</Label>
+                <Slider
+                  id="distribution-volume"
+                  min={1}
+                  max={100}
+                  step={1}
+                  value={[pkParameters.distributionVolume]}
+                  onValueChange={([value]) => handleParameterChange("distributionVolume", value)}
+                />
+                <div className="text-xs text-center">{pkParameters.distributionVolume.toFixed(0)} L</div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="elimination-rate">Elimination Rate (ke, 1/hr)</Label>
+                <Slider
+                  id="elimination-rate"
+                  min={0.01}
+                  max={1}
+                  step={0.01}
+                  value={[pkParameters.eliminationRate]}
+                  onValueChange={([value]) => handleParameterChange("eliminationRate", value)}
+                />
+                <div className="text-xs text-center">{pkParameters.eliminationRate.toFixed(2)}</div>
+              </div>
+              {pkParameters.administrationRoute === "oral" && (
+                <div className="space-y-2">
+                  <Label htmlFor="bioavailability">Bioavailability (F)</Label>
+                  <Slider
+                    id="bioavailability"
+                    min={0.01}
+                    max={1}
+                    step={0.01}
+                    value={[pkParameters.bioavailability]}
+                    onValueChange={([value]) => handleParameterChange("bioavailability", value)}
+                  />
+                  <div className="text-xs text-center">{pkParameters.bioavailability.toFixed(2)}</div>
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="simulation-duration">Simulation Duration (hours)</Label>
+                <Slider
+                  id="simulation-duration"
+                  min={1}
+                  max={72}
+                  step={1}
+                  value={simulationDuration}
+                  onValueChange={setSimulationDuration}
+                />
+                <div className="text-xs text-center">{simulationDuration[0]} hours</div>
+              </div>
+            </div>
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card className="bg-blue-50 border-blue-200">
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-blue-700">Calculated Clearance (CL)</p>
+                    <p className="text-xl font-bold text-blue-900">{pkParameters.clearance.toFixed(2)} L/hr</p>
+                  </div>
+                  <Calculator className="h-8 w-8 text-blue-500" />
+                </CardContent>
+              </Card>
+              <Card className="bg-green-50 border-green-200">
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-green-700">Calculated Half-Life (t½)</p>
+                    <p className="text-xl font-bold text-green-900">{pkParameters.halfLife.toFixed(2)} hours</p>
+                  </div>
+                  <Clock className="h-8 w-8 text-green-500" />
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
 
-        <div className="h-[350px] w-full">
-          <ChartContainer
-            config={{
-              concentration: {
-                label: "Drug Concentration (mg/L)",
-                color: "hsl(var(--chart-1))",
-              },
-            }}
-          >
-            <ResponsiveContainer width="100%" height="100%">
+        <Card className="border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart2 className="h-5 w-5 text-[#2E8B57]" />
+              Concentration-Time Curve
+            </CardTitle>
+            <CardDescription>Visual representation of drug concentration over time.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
               <LineChart
-                data={pkData}
+                data={simulationResults}
                 margin={{
-                  top: 10,
+                  top: 5,
                   right: 30,
-                  left: 0,
-                  bottom: 0,
+                  left: 20,
+                  bottom: 5,
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="time"
-                  label={{ value: "Time (hours)", position: "insideBottom", offset: -5 }}
-                  tickFormatter={(value) => value.toFixed(1)}
-                />
+                <XAxis dataKey="time" label={{ value: "Time (hours)", position: "insideBottom", offset: -5 }} />
                 <YAxis
-                  label={{ value: "Concentration (mg/L)", angle: -90, position: "insideLeft" }}
-                  tickFormatter={(value) => value.toFixed(2)}
+                  label={{ value: "Concentration (mg/L)", angle: -90, position: "insideLeft", offset: 10 }}
+                  domain={[0, "dataMax + 10"]}
                 />
-                <ChartTooltip content={<ChartTooltipContent />} />
+                <Tooltip
+                  formatter={(value: number) => [`${value.toFixed(2)} mg/L`, "Concentration"]}
+                  labelFormatter={(label: number) => `Time: ${label.toFixed(1)} hours`}
+                />
                 <Legend />
                 <Line
                   type="monotone"
                   dataKey="concentration"
-                  stroke="var(--color-concentration)"
+                  stroke="#8884d8"
                   activeDot={{ r: 8 }}
-                  name="Concentration"
+                  name="Drug Concentration"
                 />
               </LineChart>
             </ResponsiveContainer>
-          </ChartContainer>
-        </div>
-
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg text-sm text-gray-700">
-          <h3 className="font-semibold mb-2">Simulation Insights:</h3>
-          {pkData.length > 0 && (
-            <>
-              <p>
-                <strong>Peak Concentration (Cmax):</strong> {Math.max(...pkData.map((d) => d.concentration)).toFixed(2)}{" "}
-                mg/L
-              </p>
-              <p>
-                <strong>Time to Peak (Tmax):</strong>{" "}
-                {pkData
-                  .find((d) => d.concentration === Math.max(...pkData.map((p) => p.concentration)))
-                  ?.time.toFixed(1)}{" "}
-                hours
-              </p>
-              <p>
-                <strong>Half-life (t1/2):</strong> {(Math.log(2) / parameters.eliminationRateConstant).toFixed(2)} hours
-              </p>
-            </>
-          )}
-          <p className="mt-2 text-xs text-gray-600">
-            Note: This is a simplified one-compartment oral PK model. Real-world pharmacokinetics are more complex.
-          </p>
-        </div>
+          </CardContent>
+        </Card>
       </CardContent>
     </Card>
   )
