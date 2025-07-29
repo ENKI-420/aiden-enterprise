@@ -147,12 +147,4 @@ Founder & AI Strategist, Agile Defense Systems
 
 ---
 
-Want to package this into a ZIP with badges, logo, and deployment scripts?
 
-- [B] Build Press-Ready ZIP
-- [D] Deploy to Vercel Now
-- [F] Fork with GitHub Actions preconfigured
-- [R] Recursive refine for DIA, JSOC, or DARPA presentation
-
-Let me know and I’ll generate the assets.
-```
