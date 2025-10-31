@@ -467,6 +467,34 @@ function printSummary() {
 }
 
 /**
+ * Find files with specific extensions
+ */
+function findFilesWithExtensions(dir, extensions, files = []) {
+  try {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      
+      if (entry.isDirectory()) {
+        if (!shouldExcludeDir(fullPath)) {
+          findFilesWithExtensions(fullPath, extensions, files);
+        }
+      } else if (entry.isFile()) {
+        const ext = path.extname(entry.name);
+        if (extensions.includes(ext)) {
+          files.push(fullPath);
+        }
+      }
+    }
+  } catch (error) {
+    state.errors.push({ file: dir, error: error.message, phase: 'scanning' });
+  }
+  
+  return files;
+}
+
+/**
  * Main execution function
  */
 function main() {
@@ -531,34 +559,6 @@ function main() {
   } else {
     log.success('Conversion completed!');
   }
-}
-
-/**
- * Find files with specific extensions
- */
-function findFilesWithExtensions(dir, extensions, files = []) {
-  try {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-    
-    for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name);
-      
-      if (entry.isDirectory()) {
-        if (!shouldExcludeDir(fullPath)) {
-          findFilesWithExtensions(fullPath, extensions, files);
-        }
-      } else if (entry.isFile()) {
-        const ext = path.extname(entry.name);
-        if (extensions.includes(ext)) {
-          files.push(fullPath);
-        }
-      }
-    }
-  } catch (error) {
-    state.errors.push({ file: dir, error: error.message, phase: 'scanning' });
-  }
-  
-  return files;
 }
 
 // Handle command line help

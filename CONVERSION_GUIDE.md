@@ -78,7 +78,7 @@ This will:
 #### Step 2: Review the Output
 
 Check the dry-run output carefully:
-- Verify the number of files to be converted (should be 83 in this project)
+- Verify the number of files to be converted
 - Look for any errors or warnings
 - Ensure all expected files are included
 
@@ -261,8 +261,8 @@ The conversion script is located at:
 /convert-tsx-to-dna.js
 ```
 
-## Project Statistics
+## Notes
 
-- Total `.tsx` files in project: 83
-- Directories processed: app/, components/, hooks/, lib/
-- Configuration files updated: tsconfig.json, .gitignore, next.config.mjs
+- The exact number of .tsx files and directories will vary depending on your project
+- Run with `--dry-run` first to see the specific counts for your project
+- The script automatically adapts to your project structure
