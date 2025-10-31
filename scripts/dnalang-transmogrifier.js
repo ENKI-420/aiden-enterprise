@@ -254,4 +254,9 @@ const root = process.cwd();
 const dryRun = process.argv.includes('--dry-run');
 const backup = !process.argv.includes('--no-backup');
 
-transmogrify(root, dryRun, backup).catch(console.error);
+try {
+    transmogrify(root, dryRun, backup);
+} catch (error) {
+    console.error(error);
+    process.exit(1);
+}
