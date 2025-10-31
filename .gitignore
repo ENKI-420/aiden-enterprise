@@ -25,3 +25,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# DNA-Lang Transmogrifier Artifacts
+*.dnaswap
+dnalang_error_log_*.json
+backup_dnalang_*/
