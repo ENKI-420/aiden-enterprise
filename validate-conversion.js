@@ -67,9 +67,10 @@ function findFilesWithExtension(dir, extension, files = []) {
 
 function checkForTsxReferencesInFile(filePath) {
   try {
-    // Skip the conversion scripts themselves
+    // Skip the conversion scripts themselves (they contain .tsx as part of their logic)
     const fileName = path.basename(filePath);
-    if (fileName === 'convert-tsx-to-dna.js' || fileName === 'validate-conversion.js') {
+    const excludedFiles = ['convert-tsx-to-dna.js', 'validate-conversion.js', 'test-conversion-patterns.js'];
+    if (excludedFiles.includes(fileName)) {
       return [];
     }
     
