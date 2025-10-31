@@ -27,7 +27,6 @@ function backupProject(source) {
     
     console.log(`\n📦 Creating project backup at: ${backupDir}`);
 
-    // Simple recursive copy (replace with a more robust library like 'fs-extra' for production)
     function copyDirSync(src, dest) {
         fs.mkdirSync(dest, { recursive: true });
         const entries = fs.readdirSync(src, { withFileTypes: true });
@@ -64,21 +63,20 @@ function backupProject(source) {
  * @param {boolean} dryRun - If true, only logs changes without executing.
  * @param {boolean} backup - If true, creates a project backup before changes.
  */
-async function transmogrify(rootDir, dryRun = true, backup = true) {
+function transmogrify(rootDir, dryRun = true, backup = true) {
     console.log(`\n🧬 Starting DNA-Lang Transmogrification (Dry Run: ${dryRun})\n`);
 
     if (backup && !dryRun) {
-        // 3. Safety Features: Automatic Backup (Implementation required here)
         backupProject(rootDir);
     }
 
-    // 1. Smart File Conversion & 2. Comprehensive Reference Updates (Initial Scan)
-    await recursivelyScanAndRename(rootDir, dryRun);
+    // Scan and rename .tsx files to .dna
+    recursivelyScanAndRename(rootDir, dryRun);
 
-    // 2. Comprehensive Reference Updates (Post-Scan/Reference Update Phase)
+    // Update all references and configuration files
     if (Object.keys(conversionMap).length > 0) {
-        await updateReferencesInAllFiles(rootDir, dryRun);
-        await updateConfigurationFiles(rootDir, dryRun); // 4. Configuration Support
+        updateReferencesInAllFiles(rootDir, dryRun);
+        updateConfigurationFiles(rootDir, dryRun);
     } else {
         console.log('No .tsx files found. Exiting.');
     }
@@ -103,9 +101,9 @@ async function transmogrify(rootDir, dryRun = true, backup = true) {
 }
 
 /**
- * Step 1: Recursively scans and renames files.
+ * Recursively scans and renames .tsx files to .dna.
  */
-async function recursivelyScanAndRename(currentDir, dryRun) {
+function recursivelyScanAndRename(currentDir, dryRun) {
     const files = fs.readdirSync(currentDir);
 
     for (const file of files) {
@@ -113,9 +111,9 @@ async function recursivelyScanAndRename(currentDir, dryRun) {
         const stat = fs.statSync(fullPath);
 
         if (stat.isDirectory()) {
-            // 3. Safety Features: Excluded Directories
+            // Skip excluded directories
             if (!EXCLUDED_DIRS.includes(file)) {
-                await recursivelyScanAndRename(fullPath, dryRun);
+                recursivelyScanAndRename(fullPath, dryRun);
             }
         } else if (file.endsWith(SOURCE_EXTENSION)) {
             try {
@@ -137,12 +135,11 @@ async function recursivelyScanAndRename(currentDir, dryRun) {
 }
 
 /**
- * Step 2: Updates all import/require statements and references.
+ * Updates all import/require statements and references.
  */
-async function updateReferencesInAllFiles(rootDir, dryRun) {
+function updateReferencesInAllFiles(rootDir, dryRun) {
     console.log('\n🔄 Updating file references...');
     
-    // Placeholder logic for searching through all files for references
     const allFiles = getAllProjectFiles(rootDir);
     
     for (const filePath of allFiles) {
@@ -194,18 +191,13 @@ async function updateReferencesInAllFiles(rootDir, dryRun) {
 
 
 /**
- * Step 4: Updates key configuration files.
+ * Updates key configuration files (tsconfig.json, .gitignore).
  */
-async function updateConfigurationFiles(rootDir, dryRun) {
+function updateConfigurationFiles(rootDir, dryRun) {
     console.log('\n⚙️ Updating configuration files...');
-    const configFiles = [
-        'tsconfig.json', 'jsconfig.json', 'package.json', '.gitignore',
-        // Add more config files here
-    ];
     
-    // Logic for updating each config file (e.g., changing 'moduleResolution' or file extensions)
     if (!dryRun) {
-        // --- tsconfig.json example ---
+        // Update tsconfig.json
         const tsconfigPath = path.join(rootDir, 'tsconfig.json');
         if (fs.existsSync(tsconfigPath)) {
             try {
@@ -235,7 +227,6 @@ async function updateConfigurationFiles(rootDir, dryRun) {
                 logError('CONFIG_UPDATE', gitignorePath, e);
             }
         }
-        // ... add logic for package.json, jest, etc.
     } else {
         console.log('[DRY-RUN: CONFIG] Configuration files ready for update.');
     }
