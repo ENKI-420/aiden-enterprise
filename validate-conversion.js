@@ -67,6 +67,12 @@ function findFilesWithExtension(dir, extension, files = []) {
 
 function checkForTsxReferencesInFile(filePath) {
   try {
+    // Skip the conversion scripts themselves
+    const fileName = path.basename(filePath);
+    if (fileName === 'convert-tsx-to-dna.js' || fileName === 'validate-conversion.js') {
+      return [];
+    }
+    
     const content = fs.readFileSync(filePath, 'utf8');
     const lines = content.split('\n');
     const issues = [];

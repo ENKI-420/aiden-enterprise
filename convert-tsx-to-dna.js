@@ -502,7 +502,7 @@ function main() {
   // Step 4: Find all files that might contain references
   log.info('Finding files to update references...');
   const filesToUpdate = [
-    ...findTsxFiles(config.rootDir).filter(f => f.endsWith('.dna')), // Renamed files
+    ...findFilesWithExtensions(config.rootDir, ['.dna']), // Renamed files
     ...findFilesWithExtensions(config.rootDir, ['.ts', '.js', '.jsx', '.mjs', '.cjs']),
   ];
   
