@@ -25,3 +25,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# conversion script artifacts
+.backup-*
+tsx-to-dna-mapping.json
+test-conversion-patterns.js
