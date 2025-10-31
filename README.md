@@ -123,6 +123,35 @@ vercel deploy --prod
 
 ---
 
+## 🔄 TSX to DNA File Conversion
+
+This repository includes a comprehensive Node.js script to convert all `.tsx` files to `.dna` extensions while maintaining full project functionality.
+
+### Quick Start
+
+```bash
+# Test the conversion (recommended first step)
+node convert-tsx-to-dna.js --dry-run
+
+# Run the actual conversion
+node convert-tsx-to-dna.js
+
+# Show help
+node convert-tsx-to-dna.js --help
+```
+
+### Features
+- ✅ Automatic file renaming (.tsx → .dna)
+- ✅ Comprehensive reference updates (imports, exports, requires)
+- ✅ Configuration file updates (tsconfig.json, .gitignore, etc.)
+- ✅ Automatic backup creation
+- ✅ Dry run mode for safe testing
+- ✅ Detailed error tracking and logging
+
+For complete documentation, see [CONVERSION_GUIDE.md](./CONVERSION_GUIDE.md)
+
+---
+
 ## 📄 License
 
 MIT © [Agile Defense Systems, LLC](https://agiledefensesystems.com)

@@ -101,8 +101,27 @@ This will:
 
 After conversion:
 1. Check the `tsx-to-dna-mapping.json` file to see all conversions
-2. Verify that your build still works (if applicable)
-3. Test your application to ensure everything functions correctly
+2. Run the validation script to ensure everything was converted correctly:
+   ```bash
+   node validate-conversion.js
+   ```
+3. Verify that your build still works (if applicable)
+4. Test your application to ensure everything functions correctly
+
+### Validation Script
+
+The repository includes a validation script that checks:
+- No .tsx files remain in the project (except in node_modules)
+- All .dna files exist as expected
+- No broken imports referencing .tsx files
+- Configuration files are updated correctly
+
+```bash
+# Run validation after conversion
+node validate-conversion.js
+```
+
+The script will exit with code 0 on success, or code 1 if issues are detected.
 
 ### Examples
 
@@ -115,6 +134,9 @@ node convert-tsx-to-dna.js --verbose
 
 # Perform the conversion without creating a backup (not recommended)
 node convert-tsx-to-dna.js --no-backup
+
+# Validate the conversion after running
+node validate-conversion.js
 
 # Get help
 node convert-tsx-to-dna.js --help
