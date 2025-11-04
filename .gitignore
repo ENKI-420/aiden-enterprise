@@ -30,3 +30,8 @@ next-env.d.ts
 *.dnaswap
 dnalang_error_log_*.json
 backup_dnalang_*/
+
+# conversion script artifacts
+.backup-*
+tsx-to-dna-mapping.json
+test-conversion-patterns.js
