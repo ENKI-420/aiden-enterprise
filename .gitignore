@@ -26,6 +26,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# DNA-Lang Transmogrifier Artifacts
+*.dnaswap
+dnalang_error_log_*.json
+backup_dnalang_*/
+
 # conversion script artifacts
 .backup-*
 tsx-to-dna-mapping.json
